@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "76913861450",
+    "project_id": "chatappjoflee",
+    "storage_bucket": "chatappjoflee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76913861450:android:0a7a79076df02d7d6f17b3",
+        "android_client_info": {
+          "package_name": "com.example.flutter_projects_5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwV6YSAR0OnH6dG_kLe5_J_zcfQjpVSpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76913861450:android:9dee0dcb0cabd57e6f17b3",
+        "android_client_info": {
+          "package_name": "com.example.flutter_projects_week_6"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwV6YSAR0OnH6dG_kLe5_J_zcfQjpVSpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
