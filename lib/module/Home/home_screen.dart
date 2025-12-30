@@ -1,13 +1,33 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_projects_week_6/module/Plant/product_screen.dart';
+import 'package:flutter_projects_week_6/core/constant.dart';
+import 'package:flutter_projects_week_6/core/providers/home_provider.dart';
+import 'package:flutter_projects_week_6/core/services/di.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../../utils/theme/app_theme.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => getIt<HomeProvider>()..loadData(),
+      child: const _HomeContent(),
+    );
+  }
+}
+
+class _HomeContent extends StatelessWidget {
+  const _HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
+    final provider = context.watch<HomeProvider>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -53,12 +73,12 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _buildTabButton('All', isActive: true),
-
-                        _buildTabButton('Indoor'),
-
-                        _buildTabButton('Outdoor'),
-
-                        _buildTabButton('Popular'),
+                        ...provider.categories.map((cat) => _buildTabButton(cat['name'] ?? '')),
+                        if (provider.categories.isEmpty) ...[
+                          _buildTabButton('Indoor'),
+                          _buildTabButton('Outdoor'),
+                          _buildTabButton('Popular'),
+                        ],
                       ],
                     ),
                   ),
@@ -72,12 +92,34 @@ class HomeScreen extends StatelessWidget {
                     itemCount: 3,
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () => Navigator.of(
-                        context,
-                      ).push(MaterialPageRoute(builder: (context) => ProductScreen())),
-                      child: product(name: "Monstera", price: "200", img: "Assets/plant.png"),
-                    ),
+                    itemBuilder: (context, index) {
+                      if (provider.products.isNotEmpty) {
+                        final product = provider.products[index];
+                        return GestureDetector(
+                          onTap: () => context.push(
+                            '/product/${product.id}',
+                            extra: {
+                              'name': product.name,
+                              'price': product.price,
+                              'image': product.imageUrl,
+                              'rating': product.rating,
+                              'desc': product.description,
+                            },
+                          ),
+                          child: ProductCard(
+                            name: product.name,
+                            price: product.price.toString(),
+                            imgUrl: product.imageUrl,
+                          ),
+                        );
+                      } else {
+                        return const ProductCard(
+                          name: "Monstera",
+                          price: "200",
+                          imgUrl: AppConstants.placeholderImage,
+                        );
+                      }
+                    },
                   ),
                 ),
               ],
@@ -85,99 +127,42 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: NavigationBar(
+        indicatorColor: AppTheme.secondary,
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+          side: BorderSide(color: AppTheme.primary, width: 1),
+        ),
+        selectedIndex: 0,
+        backgroundColor: Colors.white,
+
+        elevation: 0,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.favorite_border), label: 'Favorite'),
+          NavigationDestination(icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
+          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),
+        ],
+        onDestinationSelected: (idx) {
+          if (idx == 1) context.push('/map');
+        },
+      ),
     );
   }
-}
-
-Widget product({required String name, required String price, required String img}) {
-  return Container(
-    width: 200,
-    margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-    child: Column(
-      children: [
-        Center(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        name,
-                        style: GoogleFonts.cabin(
-                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      Text(
-                        '\$$price',
-                        style: GoogleFonts.cabin(
-                          textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Image.asset(img),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      height: 50,
-                      width: 130,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: const [
-                          BoxShadow(blurRadius: 0.5, color: Colors.grey, spreadRadius: 0.5),
-                        ],
-                      ),
-                      child: const Text(
-                        'Add to Cart',
-                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                      ),
-                    ),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.black,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(blurRadius: 0.5, color: Colors.grey, spreadRadius: 0.5),
-                        ],
-                      ),
-                      child: const Icon(Icons.favorite_border_rounded, color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 15),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 Widget _buildTabButton(String label, {bool isActive = false}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8.0),
     child: Container(
-      width: 83.34,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       height: 35.84,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: isActive ? Color(0xFF2E2D2D) : Color(0xFFAEAEAE)),
+          side: BorderSide(
+            width: 1,
+            color: isActive ? const Color(0xFF2E2D2D) : const Color(0xFFAEAEAE),
+          ),
           borderRadius: BorderRadius.circular(24),
         ),
       ),
@@ -185,7 +170,7 @@ Widget _buildTabButton(String label, {bool isActive = false}) {
         child: Text(
           label,
           style: TextStyle(
-            color: isActive ? Color(0xFF2E2D2D) : Color(0xFFAEAEAE),
+            color: isActive ? const Color(0xFF2E2D2D) : const Color(0xFFAEAEAE),
             fontSize: 18,
             fontFamily: 'Cabin',
             fontWeight: FontWeight.w400,
@@ -194,4 +179,114 @@ Widget _buildTabButton(String label, {bool isActive = false}) {
       ),
     ),
   );
+}
+
+class ProductCard extends StatelessWidget {
+  final String name;
+  final String price;
+  final String imgUrl;
+
+  const ProductCard({super.key, required this.name, required this.price, required this.imgUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 260,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          name,
+                          style: GoogleFonts.cabin(
+                            textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Text(
+                          '\$$price',
+                          style: GoogleFonts.cabin(
+                            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CachedNetworkImage(
+                        imageUrl: imgUrl,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) =>
+                            const Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.local_florist, size: 50, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          width: 130,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 5,
+                                color: Colors.grey.withValues(alpha: 0.2),
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: const Text(
+                            'Add to Cart',
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF131811),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 5,
+                                color: Colors.grey.withValues(alpha: 0.2),
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.favorite_border_rounded, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

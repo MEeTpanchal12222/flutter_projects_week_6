@@ -49,7 +49,11 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 20),
               SizedBox(
                 height: screenHeight * 0.42,
-                child: Image.asset('Assets/plant.png', fit: BoxFit.cover),
+                child: Image.asset(
+                  'Assets/plant.png',
+                  fit: BoxFit.fitWidth,
+                  alignment: Alignment.center,
+                ),
               ),
               const SizedBox(height: 20),
               Text(

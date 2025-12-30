@@ -7,6 +7,7 @@ import 'package:flutter_projects_week_6/module/Plant/product_screen.dart';
 import 'package:flutter_projects_week_6/module/splash/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 part 'app_router.g.dart';
 
 @TypedGoRoute<SplashRoute>(path: '/')
@@ -45,7 +46,7 @@ class PlantRoute extends GoRouteData with $PlantRoute {
   PlantRoute({required this.plantId});
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const ProductScreen();
+    return ProductScreen(productId: plantId);
   }
 }
 
@@ -54,7 +55,7 @@ class PlantMapRoute extends GoRouteData with $PlantMapRoute {
   PlantMapRoute({required this.plantId});
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const ProductScreen();
+    return ProductScreen(productId: plantId);
   }
 }
 
