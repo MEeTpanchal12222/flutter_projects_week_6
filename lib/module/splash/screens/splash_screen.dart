@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects_week_6/module/Home/home_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 30),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                  context.go('/signin');
                 },
                 child: Container(
                   height: screenWidth * 0.15,

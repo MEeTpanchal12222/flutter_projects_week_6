@@ -6,7 +6,14 @@ part of 'app_router.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$splashRoute, $loginRoute, $homeRoute];
+List<RouteBase> get $appRoutes => [
+  $splashRoute,
+  $signinRoute,
+  $signupRoute,
+  $homeRoute,
+  $trackingRoute,
+  $cartRoute,
+];
 
 RouteBase get $splashRoute =>
     GoRouteData.$route(path: '/', factory: $SplashRoute._fromState);
@@ -31,14 +38,37 @@ mixin $SplashRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $loginRoute =>
-    GoRouteData.$route(path: '/login', factory: $LoginRoute._fromState);
+RouteBase get $signinRoute =>
+    GoRouteData.$route(path: '/signin', factory: $SigninRoute._fromState);
 
-mixin $LoginRoute on GoRouteData {
-  static LoginRoute _fromState(GoRouterState state) => const LoginRoute();
+mixin $SigninRoute on GoRouteData {
+  static SigninRoute _fromState(GoRouterState state) => const SigninRoute();
 
   @override
-  String get location => GoRouteData.$location('/login');
+  String get location => GoRouteData.$location('/signin');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $signupRoute =>
+    GoRouteData.$route(path: '/signup', factory: $SignupRoute._fromState);
+
+mixin $SignupRoute on GoRouteData {
+  static SignupRoute _fromState(GoRouterState state) => const SignupRoute();
+
+  @override
+  String get location => GoRouteData.$location('/signup');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -59,10 +89,6 @@ RouteBase get $homeRoute => GoRouteData.$route(
   factory: $HomeRoute._fromState,
   routes: [
     GoRouteData.$route(path: 'plant/:plantId', factory: $PlantRoute._fromState),
-    GoRouteData.$route(
-      path: 'map/:plantId',
-      factory: $PlantMapRoute._fromState,
-    ),
   ],
 );
 
@@ -87,8 +113,10 @@ mixin $HomeRoute on GoRouteData {
 }
 
 mixin $PlantRoute on GoRouteData {
-  static PlantRoute _fromState(GoRouterState state) =>
-      PlantRoute(plantId: state.pathParameters['plantId']!);
+  static PlantRoute _fromState(GoRouterState state) => PlantRoute(
+    plantId: state.pathParameters['plantId']!,
+    $extra: state.extra as Map<String, dynamic>?,
+  );
 
   PlantRoute get _self => this as PlantRoute;
 
@@ -96,6 +124,31 @@ mixin $PlantRoute on GoRouteData {
   String get location => GoRouteData.$location(
     '/home/plant/${Uri.encodeComponent(_self.plantId)}',
   );
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $trackingRoute =>
+    GoRouteData.$route(path: '/tracking', factory: $TrackingRoute._fromState);
+
+mixin $TrackingRoute on GoRouteData {
+  static TrackingRoute _fromState(GoRouterState state) => TrackingRoute();
+
+  @override
+  String get location => GoRouteData.$location('/tracking');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -111,15 +164,14 @@ mixin $PlantRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $PlantMapRoute on GoRouteData {
-  static PlantMapRoute _fromState(GoRouterState state) =>
-      PlantMapRoute(plantId: state.pathParameters['plantId']!);
+RouteBase get $cartRoute =>
+    GoRouteData.$route(path: '/cart', factory: $CartRoute._fromState);
 
-  PlantMapRoute get _self => this as PlantMapRoute;
+mixin $CartRoute on GoRouteData {
+  static CartRoute _fromState(GoRouterState state) => const CartRoute();
 
   @override
-  String get location =>
-      GoRouteData.$location('/home/map/${Uri.encodeComponent(_self.plantId)}');
+  String get location => GoRouteData.$location('/cart');
 
   @override
   void go(BuildContext context) => context.go(location);

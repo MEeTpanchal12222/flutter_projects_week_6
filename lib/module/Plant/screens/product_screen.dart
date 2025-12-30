@@ -35,14 +35,14 @@ class ProductScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: context.widthPercentage(8), // Responsive Padding
+            horizontal: context.widthPercentage(8),
             vertical: context.heightPercentage(2),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: context.heightPercentage(35), // Responsive Image Height
+                height: context.heightPercentage(35),
                 width: context.widthPercentage(90),
                 child: CachedNetworkImage(
                   imageUrl: image,
@@ -151,12 +151,10 @@ class ProductScreen extends StatelessWidget {
                     ],
                   ),
                   InkWell(
-                    onTap: () {
-                      // Add to Cart Logic via Provider would go here
-                    },
+                    onTap: () {},
                     child: Container(
                       margin: const EdgeInsets.only(top: 10),
-                      height: context.hightForButton(60), // Responsive Button
+                      height: context.hightForButton(60),
                       width: context.widthPercentage(50),
                       decoration: BoxDecoration(
                         color: const Color(0xff50AD98),

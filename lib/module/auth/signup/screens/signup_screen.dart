@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/core/providers/auth_provider.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
+import 'package:flutter_projects_week_6/utils/widgets/common_text_field.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -70,11 +71,26 @@ class _SignUpContentState extends State<_SignUpContent> {
               ),
               const SizedBox(height: 40),
 
-              _buildTextField(_nameCtrl, "Full Name", "e.g. Oliver Green"),
+              CommonTextField(
+                ctrl: _nameCtrl,
+                label: 'Full Name',
+                hint: 'e.g. Oliver Green',
+                isObscure: false,
+              ),
               const SizedBox(height: 20),
-              _buildTextField(_emailCtrl, "Email", "hello@example.com"),
+              CommonTextField(
+                ctrl: _emailCtrl,
+                label: 'Email',
+                hint: 'hello@example.com',
+                isObscure: false,
+              ),
               const SizedBox(height: 20),
-              _buildTextField(_passCtrl, "Password", "Min. 8 characters", isObscure: true),
+              CommonTextField(
+                ctrl: _passCtrl,
+                isObscure: true,
+                label: 'Password',
+                hint: 'Min. 8 characters',
+              ),
               const SizedBox(height: 20),
 
               Row(
@@ -82,7 +98,7 @@ class _SignUpContentState extends State<_SignUpContent> {
                   Checkbox(
                     value: _agreeToTerms,
                     activeColor: AppTheme.primary,
-                    onChanged: (v) => setState(() => _agreeToTerms = v!),
+                    onChanged: (v) => (_agreeToTerms = v!),
                   ),
                   Expanded(
                     child: Text(
@@ -106,7 +122,12 @@ class _SignUpContentState extends State<_SignUpContent> {
                       ? null
                       : () async {
                           try {
-                            await provider.signUp(_nameCtrl.text, _emailCtrl.text, _passCtrl.text);
+                            await provider.signUp(
+                              _nameCtrl.text,
+                              _emailCtrl.text,
+                              _passCtrl.text,
+                              context,
+                            );
                             if (context.mounted) context.go('/home');
                           } catch (e) {
                             ScaffoldMessenger.of(
@@ -123,37 +144,6 @@ class _SignUpContentState extends State<_SignUpContent> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField(
-    TextEditingController ctrl,
-    String label,
-    String hint, {
-    bool isObscure = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-        ),
-        TextField(
-          controller: ctrl,
-          obscureText: isObscure,
-          decoration: InputDecoration(
-            hintText: hint,
-            filled: true,
-            fillColor: Theme.of(context).cardColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
-            ),
-            contentPadding: const EdgeInsets.all(16),
-          ),
-        ),
-      ],
     );
   }
 }

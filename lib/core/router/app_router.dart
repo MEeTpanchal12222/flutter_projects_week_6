@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_projects_week_6/module/Home/home_screen.dart';
-import 'package:flutter_projects_week_6/module/Login/login_screen.dart';
-import 'package:flutter_projects_week_6/module/Plant/product_screen.dart';
-import 'package:flutter_projects_week_6/module/splash/splash_screen.dart';
+import 'package:flutter_projects_week_6/module/Home/screens/home_screen.dart';
+import 'package:flutter_projects_week_6/module/Plant/screens/product_screen.dart';
+import 'package:flutter_projects_week_6/module/auth/signin/screens/signin_screen.dart';
+import 'package:flutter_projects_week_6/module/auth/signup/screens/signup_screen.dart';
+import 'package:flutter_projects_week_6/module/cart/screens/cart_screen.dart';
+import 'package:flutter_projects_week_6/module/splash/screens/splash_screen.dart';
+import 'package:flutter_projects_week_6/module/tracking/screens/tracking_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,43 +22,56 @@ class SplashRoute extends GoRouteData with $SplashRoute {
   }
 }
 
-@TypedGoRoute<LoginRoute>(path: '/login')
-class LoginRoute extends GoRouteData with $LoginRoute {
-  const LoginRoute();
+@TypedGoRoute<SigninRoute>(path: '/signin')
+class SigninRoute extends GoRouteData with $SigninRoute {
+  const SigninRoute();
   @override
-  Widget build(BuildContext context, GoRouterState state) => const LoginScreen();
+  Widget build(BuildContext context, GoRouterState state) => SignInScreen();
+}
+
+@TypedGoRoute<SignupRoute>(path: '/signup')
+class SignupRoute extends GoRouteData with $SignupRoute {
+  const SignupRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) => SignUpScreen();
 }
 
 @TypedGoRoute<HomeRoute>(
   path: "/home",
-  routes: [
-    TypedGoRoute<PlantRoute>(path: 'plant/:plantId'),
-    TypedGoRoute<PlantMapRoute>(path: 'map/:plantId'),
-  ],
+  routes: [TypedGoRoute<PlantRoute>(path: 'plant/:plantId')],
 )
 class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const HomeScreen();
+    return HomeScreen();
   }
 }
 
 class PlantRoute extends GoRouteData with $PlantRoute {
   final String plantId;
-  PlantRoute({required this.plantId});
+  final Map<String, dynamic>? $extra;
+  PlantRoute({required this.plantId, this.$extra});
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProductScreen(productId: plantId);
+    return ProductScreen(productId: plantId, productData: $extra);
   }
 }
 
-class PlantMapRoute extends GoRouteData with $PlantMapRoute {
-  final String plantId;
-  PlantMapRoute({required this.plantId});
+@TypedGoRoute<TrackingRoute>(path: '/tracking')
+class TrackingRoute extends GoRouteData with $TrackingRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProductScreen(productId: plantId);
+    return TrackingScreen();
+  }
+}
+
+@TypedGoRoute<CartRoute>(path: '/cart')
+class CartRoute extends GoRouteData with $CartRoute {
+  const CartRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CartScreen();
   }
 }
 
@@ -67,9 +83,17 @@ final router = GoRouter(
     final session = Supabase.instance.client.auth.currentSession;
     final loc = state.matchedLocation;
 
-    if (loc == '/') return session != null ? '/home' : null;
-    if (session == null && loc != '/login') return '/login';
-    if (session != null && loc == '/login') return '/home';
+    if (session != null) {
+      if (loc == '/' || loc == '/signin' || loc == '/signup') {
+        return '/home';
+      }
+    }
+    if (session == null) {
+      if (loc == '/' || loc == '/signin' || loc == '/signup') {
+        return null;
+      }
+      return '/';
+    }
 
     return null;
   },

@@ -25,4 +25,15 @@ class Product {
       rating: (map['rating'] as num).toDouble(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'image': imageUrl,
+      'rating': rating,
+    };
+  }
 }
