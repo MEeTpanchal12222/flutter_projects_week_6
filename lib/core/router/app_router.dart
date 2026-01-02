@@ -1,11 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/core/base_model/product.dart';
 import 'package:flutter_projects_week_6/module/Home/screens/home_screen.dart';
+import 'package:flutter_projects_week_6/module/Notification/screens/notification_screen.dart';
 import 'package:flutter_projects_week_6/module/Plant/screens/product_screen.dart';
 import 'package:flutter_projects_week_6/module/auth/signin/screens/signin_screen.dart';
 import 'package:flutter_projects_week_6/module/auth/signup/screens/signup_screen.dart';
 import 'package:flutter_projects_week_6/module/cart/screens/cart_screen.dart';
+import 'package:flutter_projects_week_6/module/favorite/screens/fovrites_screen.dart';
+import 'package:flutter_projects_week_6/module/order/screens/order_screen.dart';
+import 'package:flutter_projects_week_6/module/profile/screens/profile_screen.dart';
+import 'package:flutter_projects_week_6/module/search/screens/search_screen.dart';
 import 'package:flutter_projects_week_6/module/splash/screens/splash_screen.dart';
 import 'package:flutter_projects_week_6/module/tracking/screens/tracking_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -38,7 +44,18 @@ class SignupRoute extends GoRouteData with $SignupRoute {
 
 @TypedGoRoute<HomeRoute>(
   path: "/home",
-  routes: [TypedGoRoute<PlantRoute>(path: 'plant/:plantId')],
+  routes: [
+    TypedGoRoute<PlantRoute>(path: 'plant/:plantId'),
+    TypedGoRoute<ProfileRoute>(
+      path: 'profile',
+      routes: [
+        TypedGoRoute<OrderRoute>(path: 'order'),
+        TypedGoRoute<NotificationRoute>(path: 'notification'),
+      ],
+    ),
+    TypedGoRoute<CartRoute>(path: 'cart'),
+    TypedGoRoute<FavoritesRoute>(path: 'fav'),
+  ],
 )
 class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
@@ -50,11 +67,11 @@ class HomeRoute extends GoRouteData with $HomeRoute {
 
 class PlantRoute extends GoRouteData with $PlantRoute {
   final String plantId;
-  final Map<String, dynamic>? $extra;
+  final Product? $extra;
   PlantRoute({required this.plantId, this.$extra});
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProductScreen(productId: plantId, productData: $extra);
+    return ProductScreen(productId: plantId, product: $extra);
   }
 }
 
@@ -66,12 +83,52 @@ class TrackingRoute extends GoRouteData with $TrackingRoute {
   }
 }
 
-@TypedGoRoute<CartRoute>(path: '/cart')
 class CartRoute extends GoRouteData with $CartRoute {
   const CartRoute();
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return CartScreen();
+  }
+}
+
+class FavoritesRoute extends GoRouteData with $FavoritesRoute {
+  const FavoritesRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return FavoriteScreen();
+  }
+}
+
+class ProfileRoute extends GoRouteData with $ProfileRoute {
+  const ProfileRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProfileScreen();
+  }
+}
+
+@TypedGoRoute<SearchRoute>(path: '/search')
+class SearchRoute extends GoRouteData with $SearchRoute {
+  const SearchRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return SearchScreen();
+  }
+}
+
+class OrderRoute extends GoRouteData with $OrderRoute {
+  const OrderRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return OrderScreen();
+  }
+}
+
+class NotificationRoute extends GoRouteData with $NotificationRoute {
+  const NotificationRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return NotificationScreen();
   }
 }
 

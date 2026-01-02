@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductCard extends StatelessWidget {
@@ -29,16 +30,26 @@ class ProductCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          name,
-                          style: GoogleFonts.cabin(
-                            textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: context.widthPercentage(40),
+                          child: Text(
+                            name,
+                            style: GoogleFonts.cabin(
+                              textStyle: TextStyle(
+                                fontSize: context.responsiveTextSize(22),
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ),
                         ),
                         Text(
                           '\$$price',
                           style: GoogleFonts.cabin(
-                            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            textStyle: TextStyle(
+                              fontSize: context.responsiveTextSize(18),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -65,8 +76,8 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          height: 50,
-                          width: 130,
+                          height: context.hightForButton(50),
+                          width: context.widthPercentage(35),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
@@ -78,9 +89,12 @@ class ProductCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: const Text(
+                          child: Text(
                             'Add to Cart',
-                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: context.responsiveTextSize(16),
+                            ),
                           ),
                         ),
                         Container(

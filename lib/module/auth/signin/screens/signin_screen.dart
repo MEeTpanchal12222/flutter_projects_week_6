@@ -26,9 +26,7 @@ class _SignInContent extends StatefulWidget {
 }
 
 class _SignInContentState extends State<_SignInContent> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  bool _rememberMe = true;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,112 +39,126 @@ class _SignInContentState extends State<_SignInContent> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(6)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: context.heightPercentage(2)),
-              Text(
-                "Welcome\nBack",
-                style: theme.textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  height: 1.1,
-                  fontSize: context.responsiveTextSize(32),
-                ),
-              ),
-              SizedBox(height: context.heightPercentage(1.5)),
-              Text(
-                "Log in to continue your green journey.",
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                  fontSize: context.responsiveTextSize(16),
-                ),
-              ),
-              SizedBox(height: context.heightPercentage(6)),
-
-              CommonTextField(ctrl: _emailCtrl, label: "Email", hint: "hello@example.com"),
-              SizedBox(height: context.heightPercentage(2.5)),
-              CommonTextField(
-                ctrl: _passCtrl,
-                label: "Password",
-                hint: "Enter your password",
-                isObscure: true,
-              ),
-              SizedBox(height: context.heightPercentage(2.5)),
-
-              Row(
-                children: [
-                  Checkbox(
-                    value: _rememberMe,
-                    activeColor: AppTheme.primary,
-                    onChanged: (v) => setState(() => _rememberMe = v!),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: context.heightPercentage(2)),
+                Text(
+                  "Welcome\nBack",
+                  style: theme.textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    height: 1.1,
+                    fontSize: context.responsiveTextSize(32),
                   ),
-                  Text(
-                    "Remember me",
-                    style: TextStyle(
-                      fontSize: context.responsiveTextSize(14),
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                ),
+                SizedBox(height: context.heightPercentage(1.5)),
+                Text(
+                  "Log in to continue your green journey.",
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                    fontSize: context.responsiveTextSize(16),
+                  ),
+                ),
+                SizedBox(height: context.heightPercentage(6)),
+
+                CommonTextField(
+                  ctrl: provider.emailCtrl,
+                  label: "Email",
+                  hint: "hello@example.com",
+                  validator: provider.validateEmail,
+                ),
+                SizedBox(height: context.heightPercentage(2.5)),
+                CommonTextField(
+                  ctrl: provider.passCtrl,
+                  label: "Password",
+                  hint: "Enter your password",
+                  isObscure: true,
+                  validator: provider.validatePassword,
+                ),
+                SizedBox(height: context.heightPercentage(2.5)),
+
+                Row(
+                  children: [
+                    Checkbox(
+                      value: provider.rememberMe,
+                      activeColor: AppTheme.primary,
+                      onChanged: (v) => provider.toggleRememberMe(v!),
                     ),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Forgot Password?",
+                    Text(
+                      "Remember me",
                       style: TextStyle(
                         fontSize: context.responsiveTextSize(14),
-                        color: theme.textTheme.bodyMedium?.color,
-                        fontWeight: FontWeight.w600,
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          fontSize: context.responsiveTextSize(14),
+                          color: theme.textTheme.bodyMedium?.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: context.heightPercentage(4)),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: context.hightForButton(56),
+                  child: ElevatedButton(
+                    onPressed: provider.isLoading
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              try {
+                                await provider.signIn(context);
+                                if (context.mounted) context.go('/home');
+                              } catch (e) {
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(SnackBar(content: Text(e.toString())));
+                              }
+                            }
+                          },
+                    child: provider.isLoading
+                        ? const CircularProgressIndicator()
+                        : Text(
+                            "Log In",
+                            style: TextStyle(fontSize: context.responsiveTextSize(16)),
+                          ),
+                  ),
+                ),
+
+                SizedBox(height: context.heightPercentage(4)),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      context.push('/signup');
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+                        children: [
+                          TextSpan(
+                            text: "Sign Up",
+                            style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-
-              SizedBox(height: context.heightPercentage(4)),
-
-              SizedBox(
-                width: double.infinity,
-                height: context.hightForButton(56),
-                child: ElevatedButton(
-                  onPressed: provider.isLoading
-                      ? null
-                      : () async {
-                          try {
-                            await provider.signIn(_emailCtrl.text, _passCtrl.text, context);
-                            if (context.mounted) context.go('/home');
-                          } catch (e) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(content: Text(e.toString())));
-                          }
-                        },
-                  child: provider.isLoading
-                      ? const CircularProgressIndicator()
-                      : Text("Log In", style: TextStyle(fontSize: context.responsiveTextSize(16))),
                 ),
-              ),
-
-              SizedBox(height: context.heightPercentage(4)),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    context.go('/signup');
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      text: "Don't have an account? ",
-                      style: TextStyle(color: theme.textTheme.bodyMedium?.color),
-                      children: const [
-                        TextSpan(
-                          text: "Sign Up",
-                          style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

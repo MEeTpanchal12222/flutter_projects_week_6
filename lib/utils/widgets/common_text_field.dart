@@ -5,13 +5,15 @@ class CommonTextField extends StatelessWidget {
   final String label;
   final String hint;
   final bool isObscure;
+  String? Function(String?)? validator;
 
-  const CommonTextField({
+  CommonTextField({
     super.key,
     required this.ctrl,
     required this.label,
     required this.hint,
     this.isObscure = false,
+    this.validator,
   });
 
   @override
@@ -23,8 +25,9 @@ class CommonTextField extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8.0),
           child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
         ),
-        TextField(
+        TextFormField(
           controller: ctrl,
+          validator: validator,
           obscureText: isObscure,
           decoration: InputDecoration(
             hintText: hint,

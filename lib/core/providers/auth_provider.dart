@@ -5,7 +5,6 @@ class AuthProvider extends ChangeNotifier {
   final AuthRepository _repo;
   AuthProvider(this._repo);
 
-  // UI Controllers
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   final userCtrl = TextEditingController();
@@ -13,10 +12,14 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSignUp = false;
   bool _obscurePassword = true;
+  bool _rememberMe = false;
+  bool _agreeToTerms = false;
 
   bool get isLoading => _isLoading;
   bool get isSignUp => _isSignUp;
   bool get obscurePassword => _obscurePassword;
+  bool get rememberMe => _rememberMe;
+  bool get agreeToTerms => _agreeToTerms;
 
   void toggleAuthMode() {
     _isSignUp = !_isSignUp;
@@ -28,21 +31,35 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleRememberMe(bool value) {
+    _rememberMe = value;
+    notifyListeners();
+  }
+
+  void toggleAgreeToTerms(bool value) {
+    _agreeToTerms = value;
+    notifyListeners();
+  }
+
   String? validateEmail(String? value) {
-    if (value == null || value.trim().isEmpty) {
+    final textToCheck = value ?? emailCtrl.text;
+
+    if (textToCheck.trim().isEmpty) {
       return 'Please enter your email';
     }
-    if (!value.contains('@') || !value.contains('.')) {
+    if (!textToCheck.contains('@') || !textToCheck.contains('.')) {
       return 'Please enter a valid email';
     }
     return null;
   }
 
   String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
+    final textToCheck = value ?? passCtrl.text;
+
+    if (textToCheck.isEmpty) {
       return 'Please enter a password';
     }
-    if (value.length < 6) {
+    if (textToCheck.length < 6) {
       return 'Password must be at least 6 characters';
     }
     return null;
@@ -60,22 +77,22 @@ class AuthProvider extends ChangeNotifier {
     return null;
   }
 
-  Future<void> signUp(String name, String email, String password, BuildContext context) async {
+  Future<void> signUp(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _repo.signUp(email, password, name, context);
+      await _repo.signUp(emailCtrl.text, passCtrl.text, userCtrl.text, context);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> signIn(String email, String password, BuildContext context) async {
+  Future<void> signIn(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
     try {
-      await _repo.signIn(email, password, context);
+      await _repo.signIn(emailCtrl.text, passCtrl.text, context);
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_projects_week_6/core/base_model/product.dart';
+import 'package:flutter_projects_week_6/core/base_model/tips.dart';
 import 'package:flutter_projects_week_6/core/constant.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,5 +28,35 @@ class ProductRepository {
       log(e.toString(), stackTrace: st);
       return [];
     }
+  }
+
+  Future<List<Product>> searchProducts(String query) async {
+    if (query.isEmpty) return [];
+
+    final response = await _supabase
+        .from(AppConstants.productsTable)
+        .select()
+        .ilike('name', '%$query%');
+
+    return (response as List).map((e) => Product.fromMap(e)).toList();
+  }
+
+  Future<List<Product>> getPopularProducts() async {
+    final response = await _supabase.from('products').select().eq('is_featured', true).limit(5);
+    return (response as List).map((e) => Product.fromMap(e)).toList();
+  }
+
+  Future<List<Product>> getNewArrivals() async {
+    final response = await _supabase
+        .from('products')
+        .select()
+        .order('created_at', ascending: false)
+        .limit(5);
+    return (response as List).map((e) => Product.fromMap(e)).toList();
+  }
+
+  Future<List<Tip>> getTips() async {
+    final response = await _supabase.from('tips').select();
+    return (response as List).map((e) => Tip.fromMap(e)).toList();
   }
 }
