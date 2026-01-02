@@ -40,7 +40,7 @@ class _OrderContent extends StatelessWidget {
               itemBuilder: (context, index) {
                 final order = provider.orders[index];
                 return Card(
-                  color: AppTheme.primary,
+                  color: Colors.grey.shade100,
                   margin: const EdgeInsets.only(bottom: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   child: ListTile(

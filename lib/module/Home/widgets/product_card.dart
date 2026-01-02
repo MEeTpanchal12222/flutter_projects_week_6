@@ -1,14 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
+import 'package:flutter_projects_week_6/core/providers/favorites_provider.dart';
+import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
+import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductCard extends StatelessWidget {
   final String name;
   final String price;
   final String imgUrl;
+  final String id;
 
-  const ProductCard({super.key, required this.name, required this.price, required this.imgUrl});
+  const ProductCard({
+    super.key,
+    required this.name,
+    required this.price,
+    required this.imgUrl,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,44 +85,63 @@ class ProductCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          height: context.hightForButton(50),
-                          width: context.widthPercentage(35),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5,
-                                color: Colors.grey.withValues(alpha: 0.2),
-                                spreadRadius: 1,
+                        InkWell(
+                          onTap: () async {
+                            await getIt<CartProvider>().addToCart(id);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(" added to cart!"),
+                                  duration: const Duration(seconds: 1),
+                                  backgroundColor: AppTheme.primary,
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: context.hightForButton(50),
+                            width: context.widthPercentage(35),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 5,
+                                  color: Colors.grey.withValues(alpha: 0.2),
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              'Add to Cart',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: context.responsiveTextSize(16),
                               ),
-                            ],
-                          ),
-                          child: Text(
-                            'Add to Cart',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: context.responsiveTextSize(16),
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF131811),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5,
-                                color: Colors.grey.withValues(alpha: 0.2),
-                                spreadRadius: 1,
-                              ),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            getIt<FavoriteProvider>().toggleFavorite(id);
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF131811),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 5,
+                                  color: Colors.grey.withValues(alpha: 0.2),
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: Icon(Icons.favorite_border_rounded, color: Colors.white),
                           ),
-                          child: const Icon(Icons.favorite_border_rounded, color: Colors.white),
                         ),
                       ],
                     ),

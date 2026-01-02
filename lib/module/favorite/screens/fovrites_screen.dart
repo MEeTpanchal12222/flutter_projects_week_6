@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/core/base_model/product.dart';
+import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -50,18 +51,9 @@ class _FavoriteContent extends StatelessWidget {
               ),
               itemCount: provider.favorites.length,
               itemBuilder: (context, index) {
-                final product = provider.favorites[index]['products'];
+                final Product product = Product.fromMap(provider.favorites[index]['products']);
                 return GestureDetector(
-                  onTap: () => context.push(
-                    '/plant/${product['id']}',
-                    extra: {
-                      'name': product['name'],
-                      'price': product['price'],
-                      'image': product['image_url'],
-                      'rating': product['rating'],
-                      'desc': product['description'],
-                    },
-                  ),
+                  onTap: () => PlantRoute($extra: product, plantId: product.id).push(context),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -69,15 +61,15 @@ class _FavoriteContent extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: CachedNetworkImage(
-                            imageUrl: product['image_url'],
+                            imageUrl: product.imageUrl,
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(product['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text("\$${product['price']}"),
+                      Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text("\$${product.price}"),
                     ],
                   ),
                 );

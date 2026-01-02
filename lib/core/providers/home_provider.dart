@@ -15,6 +15,7 @@ class HomeProvider extends ChangeNotifier {
   List<Product> newArrivals = [];
   List<Tip> tips = [];
   bool isLoading = true;
+  int selectedCategoryId = 0;
 
   Future<void> loadData() async {
     isLoading = true;
@@ -32,11 +33,28 @@ class HomeProvider extends ChangeNotifier {
       popularProducts = results[2] as List<Product>;
       newArrivals = results[3] as List<Product>;
       tips = results[4] as List<Tip>;
+      _applyFilters();
     } on Exception catch (e, st) {
       log("Error", name: "Load Data", error: e, stackTrace: st);
     } finally {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  void selectCategory(int id) {
+    selectedCategoryId = id;
+    _applyFilters();
+  }
+
+  void _applyFilters() {
+    List<Product> temp = List.from(products);
+
+    if (selectedCategoryId != 0) {
+      temp = temp.where((p) => p.categoryId == selectedCategoryId).toList();
+    }
+
+    products = temp;
+    notifyListeners();
   }
 }
