@@ -11,7 +11,12 @@ class ProductRepository {
 
   Future<List<Product>> getProducts() async {
     try {
-      final response = await _supabase.from(AppConstants.productsTable).select();
+      final response = await _supabase.from(AppConstants.productsTable).select(
+        '''
+        *,
+        favorites!left(id)
+      ''',
+      );
       return (response as List).map((e) => Product.fromMap(e)).toList();
     } catch (e, st) {
       log(e.toString(), stackTrace: st);
@@ -42,7 +47,11 @@ class ProductRepository {
   }
 
   Future<List<Product>> getPopularProducts() async {
-    final response = await _supabase.from('products').select().eq('is_featured', true).limit(5);
+    final response = await _supabase
+        .from('products')
+        .select()
+        .eq('is_featured', true)
+        .limit(5);
     return (response as List).map((e) => Product.fromMap(e)).toList();
   }
 
@@ -59,4 +68,40 @@ class ProductRepository {
     final response = await _supabase.from('tips').select();
     return (response as List).map((e) => Tip.fromMap(e)).toList();
   }
+    Stream<Set<String>> getFavoritesStream() {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return Stream.value({});
+
+    return _supabase
+        .from('favorites')
+        .stream(primaryKey: ['id']) // Listen to changes
+        .eq('user_id', userId) // Only my favorites
+        .map((data) => data.map((e) => e['product_id'] as String).toSet());
+  }
+
+  Future<void> toggleLike(String productId) async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) return;
+
+      final exists = await _supabase
+          .from('favorites')
+          .select()
+          .eq('user_id', userId)
+          .eq('product_id', productId)
+          .maybeSingle();
+
+      if (exists != null) {
+        await _supabase.from('favorites').delete().eq('id', exists['id']);
+      } else {
+        await _supabase.from('favorites').insert({
+          'user_id': userId,
+          'product_id': productId,
+        });
+      }
+    } catch (e, st) {
+      log("Error toggling like: $e", stackTrace: st);
+    }
+  }
+
 }

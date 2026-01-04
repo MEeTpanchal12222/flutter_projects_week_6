@@ -6,6 +6,8 @@ class Product {
   final String imageUrl;
   final double rating;
   final int? categoryId;
+  final bool isFavorite;
+  
 
   Product({
     required this.id,
@@ -15,6 +17,7 @@ class Product {
     required this.imageUrl,
     required this.rating,
     this.categoryId,
+    this.isFavorite = false,
   });
 
   Product copyWith([
@@ -25,6 +28,7 @@ class Product {
     String? imageUrl,
     double? rating,
     int? categoryId,
+    bool? isFavorite,
   ]) {
     return Product(
       id: id ?? this.id,
@@ -34,6 +38,7 @@ class Product {
       imageUrl: imageUrl ?? this.imageUrl,
       rating: rating ?? this.rating,
       categoryId: categoryId ?? this.categoryId,
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 
@@ -46,6 +51,8 @@ class Product {
       imageUrl: map['image_url'] ?? '',
       rating: (map['rating'] as num).toDouble(),
       categoryId: (map['category_id'] as num).toInt(),
+       isFavorite:
+          map['favorites'] != null && (map['favorites'] as List).isNotEmpty,
     );
   }
 
@@ -58,6 +65,7 @@ class Product {
       'image': imageUrl,
       'rating': rating,
       'category_id': categoryId,
+      'isFavorites': isFavorite,
     };
   }
 }

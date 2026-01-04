@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class HomeProvider extends ChangeNotifier {
   List<Tip> tips = [];
   bool isLoading = true;
   int selectedCategoryId = 0;
+  StreamSubscription? _favSubscription;
 
   Future<void> loadData() async {
     isLoading = true;
@@ -33,6 +35,7 @@ class HomeProvider extends ChangeNotifier {
       popularProducts = results[2] as List<Product>;
       newArrivals = results[3] as List<Product>;
       tips = results[4] as List<Tip>;
+      _initRealtimeFavorites();
       _applyFilters();
     } on Exception catch (e, st) {
       log("Error", name: "Load Data", error: e, stackTrace: st);
@@ -40,6 +43,43 @@ class HomeProvider extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  void _initRealtimeFavorites() {
+    _favSubscription?.cancel();
+    _favSubscription = _repo.getFavoritesStream().listen((likedIds) {
+      _updateListsWithRealtimeData(likedIds);
+    });
+  }
+
+    void _updateListsWithRealtimeData(Set<String> likedIds) {
+    // Helper to update a list of products based on the set of liked IDs
+    List<Product> updateList(List<Product> list) {
+      return list.map((p) {
+        final isLiked = likedIds.contains(p.id);
+        // Only update if changed to avoid unnecessary object creation
+        if (p.isFavorite != isLiked) {
+          return p.copyWith(
+            p.id,
+            p.name,
+            p.description,
+            p.price,
+            p.imageUrl,
+            p.rating,
+            p.categoryId,
+            isLiked,
+          );
+        }
+        return p;
+      }).toList();
+    }
+
+    products = updateList(products);
+    popularProducts = updateList(popularProducts);
+    newArrivals = updateList(newArrivals);
+
+   
+    _applyFilters();
   }
 
   void selectCategory(int id) {
@@ -56,5 +96,13 @@ class HomeProvider extends ChangeNotifier {
 
     products = temp;
     notifyListeners();
+  }
+
+  Future<void> toggleFavorite(String productId) async {
+    try {
+      await _repo.toggleLike(productId);
+    } catch (e) {
+      debugPrint("Error toggling like: $e");
+    }
   }
 }

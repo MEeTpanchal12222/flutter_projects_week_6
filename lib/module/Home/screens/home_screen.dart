@@ -122,10 +122,7 @@ class _HomeContent extends StatelessWidget {
                               $extra: product.copyWith(),
                             ).push(context),
                             child: ProductCard(
-                              name: product.name,
-                              price: product.price.toString(),
-                              imgUrl: product.imageUrl,
-                              id: product.id,
+                              product: product,
                             ),
                           );
                         } else {
@@ -339,7 +336,10 @@ class _TipCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: TextStyle(color: Colors.black.withValues(alpha: 0.6), fontSize: 12),
+            style: GoogleFonts.cabin( 
+              color: Colors.black.withValues(alpha: 0.6), fontSize: 12, textStyle: TextStyle(
+                overflow: TextOverflow.ellipsis
+              )),
           ),
         ],
       ),

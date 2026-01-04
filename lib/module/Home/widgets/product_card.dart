@@ -1,25 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/core/base_model/product.dart';
 import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/favorites_provider.dart';
+import 'package:flutter_projects_week_6/core/providers/home_provider.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductCard extends StatelessWidget {
-  final String name;
-  final String price;
-  final String imgUrl;
-  final String id;
+  final Product product;
 
-  const ProductCard({
-    super.key,
-    required this.name,
-    required this.price,
-    required this.imgUrl,
-    required this.id,
-  });
+  const ProductCard({required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +37,7 @@ class ProductCard extends StatelessWidget {
                         SizedBox(
                           width: context.widthPercentage(40),
                           child: Text(
-                            name,
+                            product.name,
                             style: GoogleFonts.cabin(
                               textStyle: TextStyle(
                                 fontSize: context.responsiveTextSize(22),
@@ -55,7 +48,7 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '\$$price',
+                          '\$${product.price}',
                           style: GoogleFonts.cabin(
                             textStyle: TextStyle(
                               fontSize: context.responsiveTextSize(18),
@@ -70,12 +63,15 @@ class ProductCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: CachedNetworkImage(
-                        imageUrl: imgUrl,
+                        imageUrl: product.imageUrl,
                         fit: BoxFit.contain,
                         placeholder: (context, url) =>
                             const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.local_florist, size: 50, color: Colors.grey),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.local_florist,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
@@ -87,7 +83,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () async {
-                            await getIt<CartProvider>().addToCart(id);
+                            await getIt<CartProvider>().addToCart(product.id);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -124,7 +120,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            getIt<FavoriteProvider>().toggleFavorite(id);
+                            getIt<HomeProvider>().toggleFavorite(product.id);
                           },
                           child: Container(
                             height: 50,
@@ -140,7 +136,15 @@ class ProductCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: Icon(Icons.favorite_border_rounded, color: Colors.white),
+                            child: Icon(
+                              product.isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border_rounded,
+                              color: product.isFavorite
+                                  ? AppTheme.primary.withValues(alpha: 0.4)
+                                  : Colors.white,
+                              size: context.responsiveTextSize(24)
+                            ),
                           ),
                         ),
                       ],
