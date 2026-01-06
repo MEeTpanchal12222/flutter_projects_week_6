@@ -32,6 +32,8 @@ PODS:
   - "GoogleUtilities/NSData+zlib (8.1.0)":
     - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (8.1.0)
+  - image_picker_ios (0.0.1):
+    - Flutter
   - onesignal_flutter (5.3.4):
     - Flutter
     - OneSignalXCFramework (= 5.2.15)
@@ -99,6 +101,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -126,6 +129,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_maps_flutter_ios:
     :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   path_provider_foundation:
@@ -149,6 +154,7 @@ SPEC CHECKSUMS:
   google_maps_flutter_ios: 0291eb2aa252298a769b04d075e4a9d747ff7264
   GoogleMaps: 0608099d4870cac8754bdba9b6953db543432438
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
+  image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   onesignal_flutter: 6e6254c04f61c8d71d2b9a511bd19f8977eb44e4
   OneSignalXCFramework: ea9e14a95b92ad48d9b35037cbae88a9542bdea3
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880

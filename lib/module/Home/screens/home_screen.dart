@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/core/base_model/product.dart';
+import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/home_provider.dart';
 import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
-import 'package:flutter_projects_week_6/module/Home/widgets/product_card.dart';
 import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
+import 'package:flutter_projects_week_6/utils/widgets/common_product_card.dart';
 import 'package:flutter_projects_week_6/utils/widgets/common_tab_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -121,9 +123,7 @@ class _HomeContent extends StatelessWidget {
                               plantId: product.id,
                               $extra: product.copyWith(),
                             ).push(context),
-                            child: ProductCard(
-                              product: product,
-                            ),
+                            child: ProductCard(product: product),
                           );
                         } else {
                           return Row(
@@ -161,11 +161,7 @@ class _HomeContent extends StatelessWidget {
                       onTap: () {
                         PlantRoute(plantId: product.id, $extra: product).push(context);
                       },
-                      child: _NewArrivalCard(
-                        name: product.name,
-                        price: product.price.toString(),
-                        imgUrl: product.imageUrl,
-                      ),
+                      child: _NewArrivalCard(product: product),
                     );
                   },
                 ),
@@ -257,14 +253,12 @@ Widget _buildSectionTitle(BuildContext context, String title) {
 }
 
 class _NewArrivalCard extends StatelessWidget {
-  final String name;
-  final String price;
-  final String imgUrl;
+  Product product;
 
-  const _NewArrivalCard({required this.name, required this.price, required this.imgUrl});
+  _NewArrivalCard({required this.product});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
@@ -277,28 +271,53 @@ class _NewArrivalCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: CachedNetworkImage(imageUrl: imgUrl, height: 80, width: 80, fit: BoxFit.cover),
+            child: CachedNetworkImage(
+              imageUrl: product.imageUrl,
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 18)),
+                Text(
+                  product.name,
+                  style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 const SizedBox(height: 4),
                 Text("Indoor • Easy Care", style: TextStyle(color: Colors.grey[500], fontSize: 12)),
                 const SizedBox(height: 8),
                 Text(
-                  "\$$price",
+                  "\$${product.price}",
                   style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
-            child: const Icon(Icons.add, color: Colors.white, size: 20),
+          InkWell(
+            onTap: () async {
+              await getIt<CartProvider>().addToCart(product.id);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(" added to cart!"),
+                    duration: const Duration(seconds: 1),
+                    backgroundColor: AppTheme.primary,
+                  ),
+                );
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.add, color: Colors.white, size: 20),
+            ),
           ),
         ],
       ),
@@ -336,10 +355,12 @@ class _TipCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: GoogleFonts.cabin( 
-              color: Colors.black.withValues(alpha: 0.6), fontSize: 12, textStyle: TextStyle(
-                overflow: TextOverflow.ellipsis
-              )),
+            maxLines: 3,
+            style: GoogleFonts.cabin(
+              color: Colors.black.withValues(alpha: 0.6),
+              fontSize: 12,
+              textStyle: TextStyle(overflow: TextOverflow.ellipsis),
+            ),
           ),
         ],
       ),

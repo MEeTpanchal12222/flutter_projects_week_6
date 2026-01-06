@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
+import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/module/cart/widgets/checkout_section.dart';
 import 'package:flutter_projects_week_6/module/cart/widgets/quantity_button.dart';
@@ -62,69 +63,76 @@ class _CartContent extends StatelessWidget {
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
                       final item = provider.items[index];
-                      return Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: CachedNetworkImage(
-                                imageUrl: item.product.imageUrl,
-                                height: 80,
-                                width: 80,
-                                fit: BoxFit.cover,
+                      return GestureDetector(
+                        onTap: () =>
+                            PlantRoute(plantId: item.id, $extra: item.product).push(context),
+
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: CachedNetworkImage(
+                                  imageUrl: item.product.imageUrl,
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.product.name,
+                                      style: GoogleFonts.cabin(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      "\$${item.product.price}",
+                                      style: GoogleFonts.cabin(
+                                        fontSize: 16,
+                                        color: AppTheme.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
                                 children: [
-                                  Text(
-                                    item.product.name,
-                                    style: GoogleFonts.cabin(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                                  QuantityButton(
+                                    icon: Icons.remove,
+                                    onTap: () =>
+                                        provider.updateQuantity(item.id, item.quantity - 1),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    child: Text(
+                                      "${item.quantity}",
+                                      style: GoogleFonts.cabin(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    "\$${item.product.price}",
-                                    style: GoogleFonts.cabin(
-                                      fontSize: 16,
-                                      color: AppTheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  QuantityButton(
+                                    icon: Icons.add,
+                                    onTap: () =>
+                                        provider.updateQuantity(item.id, item.quantity + 1),
                                   ),
                                 ],
                               ),
-                            ),
-                            Row(
-                              children: [
-                                QuantityButton(
-                                  icon: Icons.remove,
-                                  onTap: () => provider.updateQuantity(item.id, item.quantity - 1),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Text(
-                                    "${item.quantity}",
-                                    style: GoogleFonts.cabin(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                QuantityButton(
-                                  icon: Icons.add,
-                                  onTap: () => provider.updateQuantity(item.id, item.quantity + 1),
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },

@@ -66,7 +66,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   String? validateUsername(String? value) {
-    if (!_isSignUp) return null; // Username only needed for signup
+    if (!_isSignUp) return null;
 
     if (value == null || value.trim().isEmpty) {
       return 'Please enter a username';

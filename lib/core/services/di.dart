@@ -1,3 +1,4 @@
+import 'package:flutter_projects_week_6/core/providers/add_plant_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/auth_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/home_provider.dart';
@@ -11,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../providers/favorites_provider.dart';
 import '../providers/order_provider.dart';
+import '../providers/product_details_provider.dart';
 import '../providers/profile_provider.dart';
 import 'supabase_services/database_services/favorites_services.dart';
 import 'supabase_services/database_services/notification_services.dart';
@@ -38,6 +40,8 @@ class DependencyInjection {
     getIt.registerFactory(() => FavoriteProvider(getIt()));
     getIt.registerFactory(() => NotificationProvider(getIt()));
     getIt.registerFactory(() => SearchProvider(getIt()));
+    getIt.registerFactory(() => AddPlantProvider(getIt()));
+    getIt.registerFactory(() => PlantDetailProvider(getIt()));
 
     // Cart is a Singleton because we want the cart state to persist
     // as the user navigates between screens (Home -> Details -> Cart)

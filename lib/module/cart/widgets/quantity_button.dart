@@ -15,6 +15,7 @@ class QuantityButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
+
           border: Border.all(color: Colors.grey.shade300),
         ),
         child: Icon(icon, size: 16),

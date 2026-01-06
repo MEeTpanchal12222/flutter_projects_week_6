@@ -7,7 +7,6 @@ class Product {
   final double rating;
   final int? categoryId;
   final bool isFavorite;
-  
 
   Product({
     required this.id,
@@ -20,7 +19,7 @@ class Product {
     this.isFavorite = false,
   });
 
-  Product copyWith([
+  Product copyWith({
     String? id,
     String? name,
     String? description,
@@ -29,7 +28,7 @@ class Product {
     double? rating,
     int? categoryId,
     bool? isFavorite,
-  ]) {
+  }) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -51,8 +50,7 @@ class Product {
       imageUrl: map['image_url'] ?? '',
       rating: (map['rating'] as num).toDouble(),
       categoryId: (map['category_id'] as num).toInt(),
-       isFavorite:
-          map['favorites'] != null && (map['favorites'] as List).isNotEmpty,
+      isFavorite: map['favorites'] != null && (map['favorites'] as List).isNotEmpty,
     );
   }
 

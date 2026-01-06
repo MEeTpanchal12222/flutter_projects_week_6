@@ -85,6 +85,11 @@ class _ProfileContent extends StatelessWidget {
                     title: "Notifications",
                     onTap: () => NotificationRoute().push(context),
                   ),
+                  _ProfileOption(
+                    image: 'Assets/potted-plant.png',
+                    title: "Add Plant",
+                    onTap: () => AddPlantRoute().push(context),
+                  ),
                   const Spacer(),
                   ListTile(
                     leading: Container(
@@ -132,11 +137,12 @@ class _ProfileContent extends StatelessWidget {
 }
 
 class _ProfileOption extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
   final String title;
   final VoidCallback onTap;
+  final String? image;
 
-  const _ProfileOption({required this.icon, required this.title, required this.onTap});
+  const _ProfileOption({this.icon, required this.title, required this.onTap, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +150,9 @@ class _ProfileOption extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
-        child: Icon(icon, color: AppTheme.primary),
+        child: (icon != null && image == null)
+            ? Icon(icon, color: AppTheme.primary)
+            : ImageIcon(AssetImage(image!), color: AppTheme.primary),
       ),
       title: Text(title, style: GoogleFonts.cabin(fontWeight: FontWeight.w600)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),

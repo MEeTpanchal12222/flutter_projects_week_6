@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/base_model/product.dart';
+import 'package:flutter_projects_week_6/module/AddPlant/screens/add_plant_screen.dart';
 import 'package:flutter_projects_week_6/module/Home/screens/home_screen.dart';
 import 'package:flutter_projects_week_6/module/Notification/screens/notification_screen.dart';
-import 'package:flutter_projects_week_6/module/Plant/screens/product_screen.dart';
+import 'package:flutter_projects_week_6/module/Product/screens/product_screen.dart';
 import 'package:flutter_projects_week_6/module/auth/signin/screens/signin_screen.dart';
 import 'package:flutter_projects_week_6/module/auth/signup/screens/signup_screen.dart';
 import 'package:flutter_projects_week_6/module/cart/screens/cart_screen.dart';
@@ -45,15 +46,14 @@ class SignupRoute extends GoRouteData with $SignupRoute {
 @TypedGoRoute<HomeRoute>(
   path: "/home",
   routes: [
-    TypedGoRoute<PlantRoute>(path: 'plant/:plantId'),
     TypedGoRoute<ProfileRoute>(
       path: 'profile',
       routes: [
         TypedGoRoute<OrderRoute>(path: 'order'),
         TypedGoRoute<NotificationRoute>(path: 'notification'),
+        TypedGoRoute<AddPlantRoute>(path: 'addPlant'),
       ],
     ),
-    TypedGoRoute<CartRoute>(path: 'cart'),
     TypedGoRoute<FavoritesRoute>(path: 'fav'),
   ],
 )
@@ -65,13 +65,14 @@ class HomeRoute extends GoRouteData with $HomeRoute {
   }
 }
 
+@TypedGoRoute<PlantRoute>(path: '/plant/:plantId')
 class PlantRoute extends GoRouteData with $PlantRoute {
   final String plantId;
   final Product? $extra;
   PlantRoute({required this.plantId, this.$extra});
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProductScreen(productId: plantId, product: $extra);
+    return ProductScreen(key: UniqueKey(), productId: plantId);
   }
 }
 
@@ -83,6 +84,7 @@ class TrackingRoute extends GoRouteData with $TrackingRoute {
   }
 }
 
+@TypedGoRoute<CartRoute>(path: '/cart')
 class CartRoute extends GoRouteData with $CartRoute {
   const CartRoute();
   @override
@@ -129,6 +131,14 @@ class NotificationRoute extends GoRouteData with $NotificationRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return NotificationScreen();
+  }
+}
+
+class AddPlantRoute extends GoRouteData with $AddPlantRoute {
+  const AddPlantRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AddPlantScreen();
   }
 }
 
