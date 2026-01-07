@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/theme/app_theme.dart';
+import '../../../utils/widgets/common_top_notification.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -112,17 +113,14 @@ class _HomeContent extends StatelessWidget {
                     width: 370,
                     height: 400,
                     child: ListView.builder(
-                      itemCount: provider.products.length,
+                      itemCount: provider.filterProduct.length,
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        if (provider.products.isNotEmpty) {
-                          final product = provider.products[index];
+                        if (provider.filterProduct.isNotEmpty) {
+                          final product = provider.filterProduct[index];
                           return GestureDetector(
-                            onTap: () => PlantRoute(
-                              plantId: product.id,
-                              $extra: product.copyWith(),
-                            ).push(context),
+                            onTap: () => PlantRoute(plantId: product.id).push(context),
                             child: ProductCard(product: product),
                           );
                         } else {
@@ -132,7 +130,10 @@ class _HomeContent extends StatelessWidget {
                               Container(
                                 height: 50,
                                 alignment: Alignment.center,
-                                child: const Text("No plants found"),
+                                child: Text(
+                                  "No plants found",
+                                  style: GoogleFonts.cabin(fontSize: 16, color: AppTheme.primary),
+                                ),
                               ),
                             ],
                           );
@@ -159,7 +160,7 @@ class _HomeContent extends StatelessWidget {
                     final product = provider.newArrivals[index];
                     return GestureDetector(
                       onTap: () {
-                        PlantRoute(plantId: product.id, $extra: product).push(context);
+                        PlantRoute(plantId: product.id).push(context);
                       },
                       child: _NewArrivalCard(product: product),
                     );
@@ -301,13 +302,7 @@ class _NewArrivalCard extends StatelessWidget {
             onTap: () async {
               await getIt<CartProvider>().addToCart(product.id);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(" added to cart!"),
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: AppTheme.primary,
-                  ),
-                );
+                showTopNotification(context, "added to cart!", isError: false);
               }
             },
             child: Container(

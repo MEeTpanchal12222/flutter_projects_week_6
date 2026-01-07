@@ -9,6 +9,8 @@ import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'common_top_notification.dart';
+
 class ProductCard extends StatelessWidget {
   Product product;
 
@@ -82,13 +84,7 @@ class ProductCard extends StatelessWidget {
                           onTap: () async {
                             await getIt<CartProvider>().addToCart(product.id);
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(" added to cart!"),
-                                  duration: const Duration(seconds: 1),
-                                  backgroundColor: AppTheme.primary,
-                                ),
-                              );
+                              showTopNotification(context, "added to cart!", isError: false);
                             }
                           },
                           child: Container(

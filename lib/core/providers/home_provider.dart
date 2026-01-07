@@ -10,6 +10,7 @@ class HomeProvider extends ChangeNotifier {
   HomeProvider(this._repo);
 
   List<Product> products = [];
+  List<Product> filterProduct = [];
   List<Map<String, dynamic>> categories = [];
   List<Product> popularProducts = [];
   List<Product> newArrivals = [];
@@ -54,13 +55,13 @@ class HomeProvider extends ChangeNotifier {
   }
 
   void _applyFilters() {
+    filterProduct = List.from(products);
     List<Product> temp = List.from(products);
 
     if (selectedCategoryId != 0) {
       temp = temp.where((p) => p.categoryId == selectedCategoryId).toList();
     }
-
-    products = temp;
+    filterProduct = temp;
     notifyListeners();
   }
 

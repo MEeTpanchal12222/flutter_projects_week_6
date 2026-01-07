@@ -18,6 +18,7 @@ class PlantDetailProvider extends ChangeNotifier {
   bool isLoadingReviews = false;
   bool isLoadingSimilar = false;
   bool hasMoreReviews = true;
+  bool isSubmittingReview = false;
 
   int _currentReviewPage = 0;
   final int _pageSize = 5;
@@ -105,6 +106,27 @@ class PlantDetailProvider extends ChangeNotifier {
     _currentReviewPage = 0;
     hasMoreReviews = true;
     notifyListeners();
+  }
+
+  Future<void> submitReview({
+    required String productId,
+    required int rating,
+    required String comment,
+  }) async {
+    isSubmittingReview = true;
+    notifyListeners();
+
+    try {
+      await _repo.addReview(productId: productId, rating: rating, comment: comment);
+
+      await fetchReviews(productId, isRefresh: true);
+    } catch (e) {
+      debugPrint("Error submitting review: $e");
+      rethrow;
+    } finally {
+      isSubmittingReview = false;
+      notifyListeners();
+    }
   }
 
   @override

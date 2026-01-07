@@ -23,12 +23,11 @@ class _OrderContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<OrderProvider>();
-
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
       appBar: AppBar(
         title: const Text("My Orders", style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
         leading: const BackButton(color: Colors.black),
       ),

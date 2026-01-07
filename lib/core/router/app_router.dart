@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_projects_week_6/core/base_model/product.dart';
 import 'package:flutter_projects_week_6/module/AddPlant/screens/add_plant_screen.dart';
 import 'package:flutter_projects_week_6/module/Home/screens/home_screen.dart';
 import 'package:flutter_projects_week_6/module/Notification/screens/notification_screen.dart';
@@ -68,8 +67,7 @@ class HomeRoute extends GoRouteData with $HomeRoute {
 @TypedGoRoute<PlantRoute>(path: '/plant/:plantId')
 class PlantRoute extends GoRouteData with $PlantRoute {
   final String plantId;
-  final Product? $extra;
-  PlantRoute({required this.plantId, this.$extra});
+  PlantRoute({required this.plantId});
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProductScreen(key: UniqueKey(), productId: plantId);

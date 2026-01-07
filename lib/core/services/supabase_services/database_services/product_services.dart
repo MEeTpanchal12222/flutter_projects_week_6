@@ -92,6 +92,21 @@ class ProductRepository {
     }
   }
 
+  Future<void> addReview({
+    required String productId,
+    required int rating,
+    required String comment,
+  }) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception("You must be logged in to review");
+    await _supabase.from('reviews').insert({
+      'product_id': productId,
+      'user_id': userId,
+      'rating': rating,
+      'comment': comment,
+    });
+  }
+
   Future<List<Product>> getSimilarPlants({
     required String plantId,
     required int categoryId,

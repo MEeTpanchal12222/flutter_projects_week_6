@@ -7,6 +7,7 @@ import '../../../core/providers/add_plant_provider.dart';
 import '../../../core/services/di.dart';
 import '../../../utils/Extension/responsive_ui_extension.dart';
 import '../../../utils/theme/app_theme.dart';
+import '../../../utils/widgets/common_top_notification.dart';
 
 class AddPlantScreen extends StatefulWidget {
   const AddPlantScreen({super.key});
@@ -146,17 +147,15 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                             ? null
                             : () async {
                                 if (provider.imageFile == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Please select an image")),
-                                  );
+                                  showTopNotification(context, "Please select an image");
+
                                   return;
                                 }
                                 if (_formKey.currentState!.validate()) {
                                   final success = await provider.addPlant();
                                   if (success && mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text("Plant added successfully!")),
-                                    );
+                                    showTopNotification(context, "Plant added successfully!");
+
                                     Navigator.pop(context);
                                   }
                                 }

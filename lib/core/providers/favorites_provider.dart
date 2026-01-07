@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/core/base_model/product.dart';
 
 import '../services/supabase_services/database_services/favorites_services.dart';
 
@@ -6,22 +9,40 @@ class FavoriteProvider extends ChangeNotifier {
   final FavoriteRepository _repo;
   FavoriteProvider(this._repo);
 
-  List<Map<String, dynamic>> favorites = [];
+  List<Product> favorites = [];
   bool isLoading = true;
+  StreamSubscription? _subscription;
 
-  Future<void> loadFavorites() async {
+  void loadFavorites() {
     isLoading = true;
     notifyListeners();
-    try {
-      favorites = await _repo.getFavorites();
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+
+    _subscription?.cancel();
+    _subscription = _repo.getFavoriteProductsStream().listen(
+      (data) {
+        favorites = data;
+        isLoading = false;
+        notifyListeners();
+      },
+      onError: (error) {
+        debugPrint("Favorite Stream Error: $error");
+        isLoading = false;
+        notifyListeners();
+      },
+    );
   }
 
   Future<void> toggleFavorite(String productId) async {
-    await _repo.toggleFavorite(productId);
-    await loadFavorites(); // Refresh list
+    try {
+      await _repo.toggleFavorite(productId);
+    } catch (e) {
+      debugPrint("Toggle Error: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 }

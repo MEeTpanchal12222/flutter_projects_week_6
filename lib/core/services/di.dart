@@ -43,8 +43,6 @@ class DependencyInjection {
     getIt.registerFactory(() => AddPlantProvider(getIt()));
     getIt.registerFactory(() => PlantDetailProvider(getIt()));
 
-    // Cart is a Singleton because we want the cart state to persist
-    // as the user navigates between screens (Home -> Details -> Cart)
     getIt.registerLazySingleton(() => CartProvider(getIt<CartRepository>()));
   }
 }

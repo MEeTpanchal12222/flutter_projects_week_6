@@ -95,7 +95,7 @@ class _SearchContent extends StatelessWidget {
                         final product = provider.searchResults[index];
                         return GestureDetector(
                           onTap: () {
-                            PlantRoute(plantId: product.id, $extra: product).push(context);
+                            PlantRoute(plantId: product.id).push(context);
                           },
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 16),

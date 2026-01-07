@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'common_text_style.dart';
@@ -21,7 +22,7 @@ class ToastUtils {
     Color backgroundColor;
     switch (toastType) {
       case SnackbarType.success:
-        backgroundColor = Colors.green;
+        backgroundColor = AppTheme.primary;
         break;
       case SnackbarType.error:
         backgroundColor = Colors.red;

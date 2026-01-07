@@ -237,10 +237,8 @@ RouteBase get $plantRoute => GoRouteData.$route(
 );
 
 mixin $PlantRoute on GoRouteData {
-  static PlantRoute _fromState(GoRouterState state) => PlantRoute(
-    plantId: state.pathParameters['plantId']!,
-    $extra: state.extra as Product?,
-  );
+  static PlantRoute _fromState(GoRouterState state) =>
+      PlantRoute(plantId: state.pathParameters['plantId']!);
 
   PlantRoute get _self => this as PlantRoute;
 
@@ -249,19 +247,17 @@ mixin $PlantRoute on GoRouteData {
       GoRouteData.$location('/plant/${Uri.encodeComponent(_self.plantId)}');
 
   @override
-  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+  void go(BuildContext context) => context.go(location);
 
   @override
-  Future<T?> push<T>(BuildContext context) =>
-      context.push<T>(location, extra: _self.$extra);
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
 
   @override
   void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location, extra: _self.$extra);
+      context.pushReplacement(location);
 
   @override
-  void replace(BuildContext context) =>
-      context.replace(location, extra: _self.$extra);
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $trackingRoute =>

@@ -23,7 +23,6 @@ class CartRepository {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) throw Exception('User not logged in');
 
-    // Check if item exists to increment quantity
     final existing = await _supabase
         .from(AppConstants.cartTable)
         .select()
@@ -57,22 +56,20 @@ class CartRepository {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return;
 
-    // 1. Create Order
     final order = await _supabase
         .from(AppConstants.ordersTable)
         .insert({
           'user_id': userId,
           'total_amount': totalAmount,
           'status': 'pending',
-          'delivery_address': '123 Green St, Flutter City', // Mock address
-          // Add tracking coordinates for the map feature
+          'delivery_address': '123 Green St, Flutter City',
+
           'tracking_lat': 37.7749,
           'tracking_lng': -122.4194,
         })
         .select()
         .single();
 
-    // 2. Clear Cart (In a real app, you'd move items to order_items)
     await _supabase.from(AppConstants.cartTable).delete().eq('user_id', userId);
   }
 }

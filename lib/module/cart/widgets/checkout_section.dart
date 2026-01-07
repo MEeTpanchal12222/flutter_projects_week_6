@@ -3,6 +3,8 @@ import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../utils/widgets/common_top_notification.dart';
+
 class CheckoutSection extends StatelessWidget {
   final CartProvider provider;
 
@@ -48,9 +50,7 @@ class CheckoutSection extends StatelessWidget {
               onPressed: () async {
                 await provider.checkout();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text("Order Placed!")));
+                  showTopNotification(context, "Order Placed!", isError: false);
                   context.go('/home');
                 }
               },

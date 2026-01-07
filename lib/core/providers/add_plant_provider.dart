@@ -50,9 +50,9 @@ class AddPlantProvider extends ChangeNotifier {
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
       final path = 'plant_images/$fileName';
 
-      await _supabase.storage.from('plants').upload(path, imageFile!);
+      await _supabase.storage.from('plant_images').upload(path, imageFile!);
 
-      final imageUrl = _supabase.storage.from('plants').getPublicUrl(path);
+      final imageUrl = _supabase.storage.from('plant_images').getPublicUrl(path);
 
       await _supabase.from(AppConstants.productsTable).insert({
         'name': nameCtrl.text.trim(),
