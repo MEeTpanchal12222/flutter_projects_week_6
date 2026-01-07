@@ -70,7 +70,7 @@ class PlantRoute extends GoRouteData with $PlantRoute {
   PlantRoute({required this.plantId});
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProductScreen(key: UniqueKey(), productId: plantId);
+    return ProductScreen(key: ValueKey(plantId), productId: plantId);
   }
 }
 
