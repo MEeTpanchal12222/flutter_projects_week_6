@@ -8,7 +8,7 @@ import 'package:flutter_projects_week_6/module/Product/screens/product_screen.da
 import 'package:flutter_projects_week_6/module/auth/signin/screens/signin_screen.dart';
 import 'package:flutter_projects_week_6/module/auth/signup/screens/signup_screen.dart';
 import 'package:flutter_projects_week_6/module/cart/screens/cart_screen.dart';
-import 'package:flutter_projects_week_6/module/favorite/screens/fovrites_screen.dart';
+import 'package:flutter_projects_week_6/module/favorite/screens/favorites_screen.dart';
 import 'package:flutter_projects_week_6/module/order/screens/order_screen.dart';
 import 'package:flutter_projects_week_6/module/profile/screens/profile_screen.dart';
 import 'package:flutter_projects_week_6/module/search/screens/search_screen.dart';
