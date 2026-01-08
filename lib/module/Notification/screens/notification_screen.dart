@@ -111,7 +111,7 @@ class _NotificationContent extends StatelessWidget {
                     leading: CircleAvatar(
                       backgroundColor: isRead
                           ? Colors.grey[200]
-                          : AppTheme.primary.withOpacity(0.2),
+                          : AppTheme.primary.withValues(alpha: 0.2),
                       child: Icon(
                         Icons.notifications_active_outlined,
                         color: isRead ? Colors.grey : AppTheme.primary,
