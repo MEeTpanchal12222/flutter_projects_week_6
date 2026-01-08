@@ -5,7 +5,6 @@ import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/module/cart/widgets/checkout_section.dart';
 import 'package:flutter_projects_week_6/module/cart/widgets/quantity_button.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -38,12 +37,8 @@ class _CartContent extends StatelessWidget {
           style: GoogleFonts.cabin(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => context.pop(),
-        ),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())

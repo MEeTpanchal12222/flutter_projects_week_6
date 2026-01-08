@@ -35,10 +35,6 @@ class _ProfileContent extends StatelessWidget {
         ),
         backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => context.pop(),
-        ),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -74,11 +70,6 @@ class _ProfileContent extends StatelessWidget {
                     icon: Icons.favorite_border,
                     title: "Wishlist",
                     onTap: () => FavoritesRoute().push(context),
-                  ),
-                  _ProfileOption(
-                    icon: Icons.location_on_outlined,
-                    title: "Shipping Address",
-                    onTap: () {},
                   ),
                   _ProfileOption(
                     icon: Icons.notifications_none,

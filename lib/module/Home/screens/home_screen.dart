@@ -201,28 +201,6 @@ class _HomeContent extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        indicatorColor: AppTheme.secondary,
-        indicatorShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-          side: BorderSide(color: AppTheme.primary, width: 1),
-        ),
-        selectedIndex: 0,
-        backgroundColor: Colors.white,
-
-        elevation: 0,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.favorite_border), label: 'Favorite'),
-          NavigationDestination(icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
-          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),
-        ],
-        onDestinationSelected: (idx) {
-          if (idx == 1) FavoritesRoute().push(context);
-          if (idx == 3) ProfileRoute().push(context);
-          if (idx == 2) CartRoute().push(context);
-        },
-      ),
     );
   }
 }

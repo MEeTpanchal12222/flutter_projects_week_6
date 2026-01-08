@@ -31,7 +31,7 @@ class CartProvider extends ChangeNotifier {
   Future<void> addToCart(String productId) async {
     try {
       await _repo.addToCart(productId);
-      await loadCart(); // Refresh
+      await loadCart();
     } catch (e) {
       debugPrint("Error adding to cart: $e");
     }
@@ -39,7 +39,6 @@ class CartProvider extends ChangeNotifier {
 
   Future<void> updateQuantity(String itemId, int newQuantity) async {
     try {
-      // Optimistic update
       final index = _items.indexWhere((i) => i.id == itemId);
       if (index != -1) {
         if (newQuantity <= 0) {
@@ -51,9 +50,9 @@ class CartProvider extends ChangeNotifier {
       }
 
       await _repo.updateQuantity(itemId, newQuantity);
-      if (newQuantity <= 0) loadCart(); // Refresh if deleted to be safe
+      if (newQuantity <= 0) loadCart();
     } catch (e) {
-      loadCart(); // Revert on error
+      loadCart();
     }
   }
 

@@ -58,7 +58,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
@@ -83,12 +82,9 @@ class _NotificationContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Notifications",
-          style: GoogleFonts.cabin(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: GoogleFonts.cabin(fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.primary.withValues(alpha: 0.6),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -104,8 +100,7 @@ class _NotificationContent extends StatelessWidget {
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 itemCount: provider.notifications.length,
-                separatorBuilder: (context, index) =>
-                    const Divider(height: 1, indent: 70),
+                separatorBuilder: (context, index) => const Divider(height: 1, indent: 70),
                 itemBuilder: (context, index) {
                   final note = provider.notifications[index];
                   final bool isRead = note['is_read'] ?? false;
@@ -126,9 +121,7 @@ class _NotificationContent extends StatelessWidget {
                     title: Text(
                       note['title'] ?? 'Update',
                       style: TextStyle(
-                        fontWeight: isRead
-                            ? FontWeight.normal
-                            : FontWeight.bold,
+                        fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
@@ -138,18 +131,12 @@ class _NotificationContent extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           note['message'] ?? '',
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14,
-                          ),
+                          style: TextStyle(color: Colors.grey[600], fontSize: 14),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           DateFormat('MMM d, h:mm a').format(date),
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 11,
-                          ),
+                          style: TextStyle(color: Colors.grey[400], fontSize: 11),
                         ),
                       ],
                     ),
@@ -175,11 +162,7 @@ class _NotificationContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.notifications_none_outlined,
-            size: 64,
-            color: Colors.grey[300],
-          ),
+          Icon(Icons.notifications_none_outlined, size: 64, color: Colors.grey[300]),
           const SizedBox(height: 16),
           Text(
             "All caught up!",

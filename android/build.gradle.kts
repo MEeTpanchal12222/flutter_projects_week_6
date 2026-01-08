@@ -1,3 +1,16 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+
+        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.onesignal:onesignal-gradle-plugin:[0.12.10, 0.99.99]'
+    }
+}
+
 allprojects {
     repositories {
         google()

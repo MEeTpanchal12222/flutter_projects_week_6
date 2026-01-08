@@ -17,6 +17,8 @@ import 'package:flutter_projects_week_6/module/tracking/screens/tracking_screen.
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../module/main/main_shell.dart';
+
 part 'app_router.g.dart';
 
 @TypedGoRoute<SplashRoute>(path: '/')
@@ -42,20 +44,54 @@ class SignupRoute extends GoRouteData with $SignupRoute {
   Widget build(BuildContext context, GoRouterState state) => SignUpScreen();
 }
 
-@TypedGoRoute<HomeRoute>(
-  path: "/home",
-  routes: [
-    TypedGoRoute<ProfileRoute>(
-      path: 'profile',
-      routes: [
-        TypedGoRoute<OrderRoute>(path: 'order'),
-        TypedGoRoute<NotificationRoute>(path: 'notification'),
-        TypedGoRoute<AddPlantRoute>(path: 'addPlant'),
-      ],
+@TypedStatefulShellRoute<MainShellRouteData>(
+  branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
+    TypedStatefulShellBranch<HomeBranchData>(
+      routes: <TypedRoute<RouteData>>[TypedGoRoute<HomeRoute>(path: '/home')],
     ),
-    TypedGoRoute<FavoritesRoute>(path: 'fav'),
+
+    TypedStatefulShellBranch<FavoriteBranchData>(
+      routes: <TypedRoute<RouteData>>[TypedGoRoute<FavoritesRoute>(path: '/fav')],
+    ),
+
+    TypedStatefulShellBranch<CartBranchData>(
+      routes: <TypedRoute<RouteData>>[TypedGoRoute<CartRoute>(path: '/cart')],
+    ),
+
+    TypedStatefulShellBranch<ProfileBranchData>(
+      routes: <TypedRoute<RouteData>>[TypedGoRoute<ProfileRoute>(path: '/profile')],
+    ),
   ],
 )
+class MainShellRouteData extends StatefulShellRouteData {
+  const MainShellRouteData();
+
+  @override
+  Widget builder(
+    BuildContext context,
+    GoRouterState state,
+    StatefulNavigationShell navigationShell,
+  ) {
+    return MainShell(navigationShell: navigationShell);
+  }
+}
+
+class HomeBranchData extends StatefulShellBranchData {
+  const HomeBranchData();
+}
+
+class FavoriteBranchData extends StatefulShellBranchData {
+  const FavoriteBranchData();
+}
+
+class CartBranchData extends StatefulShellBranchData {
+  const CartBranchData();
+}
+
+class ProfileBranchData extends StatefulShellBranchData {
+  const ProfileBranchData();
+}
+
 class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
   @override
@@ -116,6 +152,7 @@ class SearchRoute extends GoRouteData with $SearchRoute {
   }
 }
 
+@TypedGoRoute<OrderRoute>(path: '/order')
 class OrderRoute extends GoRouteData with $OrderRoute {
   const OrderRoute();
   @override
@@ -124,6 +161,7 @@ class OrderRoute extends GoRouteData with $OrderRoute {
   }
 }
 
+@TypedGoRoute<NotificationRoute>(path: '/notification')
 class NotificationRoute extends GoRouteData with $NotificationRoute {
   const NotificationRoute();
   @override
@@ -132,6 +170,7 @@ class NotificationRoute extends GoRouteData with $NotificationRoute {
   }
 }
 
+@TypedGoRoute<AddPlantRoute>(path: '/addPlant')
 class AddPlantRoute extends GoRouteData with $AddPlantRoute {
   const AddPlantRoute();
   @override

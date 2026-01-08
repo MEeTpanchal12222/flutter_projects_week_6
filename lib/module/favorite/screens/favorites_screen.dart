@@ -36,9 +36,8 @@ class _FavoriteContent extends StatelessWidget {
           "Favorites",
           style: GoogleFonts.cabin(fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        backgroundColor: AppTheme.primary.withValues(alpha: 0.5),
+        backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
-        leading: const BackButton(color: Colors.black),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
