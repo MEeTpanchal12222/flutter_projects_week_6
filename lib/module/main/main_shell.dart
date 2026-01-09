@@ -42,7 +42,7 @@ class MainShell extends StatelessWidget {
 
         elevation: 0,
         destinations: [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.favorite_border), label: 'Favorite'),
           NavigationDestination(icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
           NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),

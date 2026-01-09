@@ -65,9 +65,9 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavorite(String productId) async {
+  Future<void> toggleFavorite(String productId, BuildContext context) async {
     try {
-      await _repo.toggleLike(productId);
+      await _repo.toggleLike(productId, context);
     } catch (e) {
       debugPrint("Error toggling like: $e");
     }

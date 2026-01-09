@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter_projects_week_6/core/base_model/product.dart';
 import 'package:flutter_projects_week_6/core/base_model/tips.dart';
 import 'package:flutter_projects_week_6/core/constant.dart';
+import 'package:flutter_projects_week_6/utils/widgets/common_top_notification.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../base_model/review.dart';
@@ -178,7 +179,7 @@ class ProductRepository {
         .map((data) => data.map((e) => e['product_id'] as String).toSet());
   }
 
-  Future<void> toggleLike(String productId) async {
+  Future<void> toggleLike(String productId, context) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) return;
@@ -198,12 +199,15 @@ class ProductRepository {
               .eq('id', existing['id'])
               .eq('user_id', userId)
               .eq('product_id', productId);
+
+          showTopNotification(context, "Removed from Favorites", isError: false);
         } on Error catch (Error) {
           log(Error.toString());
         }
       } else {
         try {
           await _supabase.from('favorites').insert({'user_id': userId, 'product_id': productId});
+          showTopNotification(context, "Added to Favorites", isError: false);
         } on PostgrestException catch (e) {
           if (e.code == '23505') {
             await _supabase

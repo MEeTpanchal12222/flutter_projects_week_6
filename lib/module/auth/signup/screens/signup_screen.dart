@@ -130,6 +130,16 @@ class _SignUpContentState extends State<_SignUpContent> {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
+                    clipBehavior: Clip.antiAlias,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primary.withValues(alpha: 0.7),
+                      foregroundColor: AppTheme.backgroundLight,
+                      disabledBackgroundColor: AppTheme.primary.withValues(alpha: 0.5),
+                      elevation: 0,
+                      shadowColor: AppTheme.secondary,
+                      side: BorderSide(color: AppTheme.primary.withValues(alpha: 2), width: 3),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    ),
                     onPressed: provider.isLoading
                         ? null
                         : () async {

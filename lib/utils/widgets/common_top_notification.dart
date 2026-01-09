@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 
+OverlayEntry? _previousEntry;
+
 void showTopNotification(BuildContext context, String message, {bool isError = true}) {
   final overlay = Overlay.of(context);
+
+  if (_previousEntry != null && _previousEntry!.mounted) {
+    _previousEntry!.remove();
+    _previousEntry = null;
+  }
   late OverlayEntry entry;
 
   entry = OverlayEntry(
@@ -50,6 +57,15 @@ void showTopNotification(BuildContext context, String message, {bool isError = t
     ),
   );
 
+  _previousEntry = entry;
   overlay.insert(entry);
-  Future.delayed(const Duration(seconds: 3), () => entry.remove());
+  Future.delayed(const Duration(seconds: 3), () {
+    if (entry.mounted) {
+      entry.remove();
+
+      if (_previousEntry == entry) {
+        _previousEntry = null;
+      }
+    }
+  });
 }

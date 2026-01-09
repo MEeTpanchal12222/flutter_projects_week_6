@@ -59,7 +59,7 @@ class _CartContent extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = provider.items[index];
                       return GestureDetector(
-                        onTap: () => PlantRoute(plantId: item.id).push(context),
+                        onTap: () => PlantRoute(plantId: item.product.id).push(context),
 
                         child: Container(
                           padding: const EdgeInsets.all(12),

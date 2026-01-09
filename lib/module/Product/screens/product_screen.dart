@@ -64,6 +64,16 @@ class _ProductDetailsContent extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppTheme.backgroundLight,
         elevation: 0,
+        surfaceTintColor: AppTheme.backgroundLight,
+        title: Text(
+          product.name,
+          style: GoogleFonts.cabin(
+            fontWeight: FontWeight.bold,
+            fontSize: context.responsiveTextSize(18),
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => context.pop(),
@@ -76,7 +86,7 @@ class _ProductDetailsContent extends StatelessWidget {
                 product.isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
                 color: product.isFavorite ? AppTheme.primary : Colors.black,
               ),
-              onPressed: () => context.read<HomeProvider>().toggleFavorite(product.id),
+              onPressed: () => context.read<HomeProvider>().toggleFavorite(product.id, context),
             ),
           ),
         ],

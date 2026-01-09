@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 
 class CommonTextField extends StatelessWidget {
   final TextEditingController ctrl;
@@ -28,14 +29,27 @@ class CommonTextField extends StatelessWidget {
         TextFormField(
           controller: ctrl,
           validator: validator,
+          cursorColor: AppTheme.primary,
+
           obscureText: isObscure,
+
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
-            fillColor: Theme.of(context).cardColor,
+            fillColor: AppTheme.backgroundLight,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+            ),
+
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+            ),
+
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppTheme.primary),
             ),
             contentPadding: const EdgeInsets.all(16),
           ),

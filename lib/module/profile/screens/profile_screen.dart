@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/providers/profile_provider.dart';
 import 'package:flutter_projects_week_6/core/router/app_router.dart';
@@ -108,18 +109,33 @@ class _ProfileContent extends StatelessWidget {
   void _showLogoutDialog(BuildContext context, ProfileProvider provider) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text("Log Out"),
-        content: const Text("Are you sure you want to log out?"),
+      builder: (ctx) => CupertinoAlertDialog(
+        title: Text(
+          "Log Out",
+          style: GoogleFonts.cabin(color: AppTheme.textMain, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          "Are you sure you want to log out?",
+          style: GoogleFonts.cabin(color: AppTheme.textMain),
+        ),
         actions: [
-          TextButton(onPressed: () => ctx.pop(), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () => ctx.pop(),
+            child: Text(
+              "Cancel",
+              style: GoogleFonts.cabin(color: AppTheme.primary, fontWeight: FontWeight.bold),
+            ),
+          ),
           TextButton(
             onPressed: () async {
               ctx.pop();
               await provider.signOut();
               if (context.mounted) context.go('/');
             },
-            child: const Text("Log Out", style: TextStyle(color: Colors.red)),
+            child: Text(
+              "Log Out",
+              style: GoogleFonts.cabin(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

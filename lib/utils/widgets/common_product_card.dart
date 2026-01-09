@@ -112,7 +112,8 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () => context.read<HomeProvider>().toggleFavorite(product.id),
+                          onTap: () =>
+                              context.read<HomeProvider>().toggleFavorite(product.id, context),
                           child: Container(
                             height: 50,
                             width: 50,
