@@ -3,8 +3,6 @@ import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../utils/widgets/common_top_notification.dart';
-
 class CheckoutSection extends StatelessWidget {
   final CartProvider provider;
 
@@ -31,7 +29,10 @@ class CheckoutSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Total:", style: GoogleFonts.cabin(fontSize: 18, color: Colors.grey)),
+              Text(
+                "Total:",
+                style: GoogleFonts.cabin(fontSize: 18, color: Colors.grey),
+              ),
               Text(
                 "\$${provider.totalAmount.toStringAsFixed(2)}",
                 style: GoogleFonts.cabin(
@@ -48,15 +49,16 @@ class CheckoutSection extends StatelessWidget {
             height: 56,
             child: ElevatedButton(
               onPressed: () async {
-                await provider.checkout();
+                await provider.checkout(context);
                 if (context.mounted) {
-                  showTopNotification(context, "Order Placed!", isError: false);
                   context.go('/home');
                 }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xff50AD98),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28),
+                ),
               ),
               child: Text(
                 "Checkout",

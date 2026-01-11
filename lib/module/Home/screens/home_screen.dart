@@ -12,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/theme/app_theme.dart';
-import '../../../utils/widgets/common_top_notification.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -95,9 +94,21 @@ class _HomeContent extends StatelessWidget {
                           ),
                         ),
                         if (provider.categories.isEmpty) ...[
-                          CommonTabButton(provider: provider, label: 'Indoor', onTap: () {}),
-                          CommonTabButton(provider: provider, label: 'Outdoor', onTap: () {}),
-                          CommonTabButton(provider: provider, label: 'Popular', onTap: () {}),
+                          CommonTabButton(
+                            provider: provider,
+                            label: 'Indoor',
+                            onTap: () {},
+                          ),
+                          CommonTabButton(
+                            provider: provider,
+                            label: 'Outdoor',
+                            onTap: () {},
+                          ),
+                          CommonTabButton(
+                            provider: provider,
+                            label: 'Popular',
+                            onTap: () {},
+                          ),
                         ],
                       ],
                     ),
@@ -120,7 +131,8 @@ class _HomeContent extends StatelessWidget {
                         if (provider.filterProduct.isNotEmpty) {
                           final product = provider.filterProduct[index];
                           return GestureDetector(
-                            onTap: () => PlantRoute(plantId: product.id).push(context),
+                            onTap: () =>
+                                PlantRoute(plantId: product.id).push(context),
                             child: ProductCard(product: product),
                           );
                         } else {
@@ -132,7 +144,10 @@ class _HomeContent extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Text(
                                   "No plants found",
-                                  style: GoogleFonts.cabin(fontSize: 16, color: AppTheme.primary),
+                                  style: GoogleFonts.cabin(
+                                    fontSize: 16,
+                                    color: AppTheme.primary,
+                                  ),
                                 ),
                               ),
                             ],
@@ -181,7 +196,8 @@ class _HomeContent extends StatelessWidget {
                       final tip = provider.tips[index];
 
                       IconData iconData = Icons.help_outline;
-                      if (tip.iconName == 'water_drop') iconData = Icons.water_drop;
+                      if (tip.iconName == 'water_drop')
+                        iconData = Icons.water_drop;
                       if (tip.iconName == 'wb_sunny') iconData = Icons.wb_sunny;
                       if (tip.iconName == 'grass') iconData = Icons.grass;
 
@@ -264,24 +280,30 @@ class _NewArrivalCard extends StatelessWidget {
               children: [
                 Text(
                   product.name,
-                  style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: GoogleFonts.cabin(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                Text("Indoor • Easy Care", style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+                Text(
+                  "Indoor • Easy Care",
+                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   "\$${product.price}",
-                  style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: GoogleFonts.cabin(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ],
             ),
           ),
           InkWell(
             onTap: () async {
-              await getIt<CartProvider>().addToCart(product.id);
-              if (context.mounted) {
-                showTopNotification(context, "added to cart!", isError: false);
-              }
+              await getIt<CartProvider>().addToCart(product.id, context);
             },
             child: Container(
               padding: const EdgeInsets.all(8),
@@ -317,14 +339,20 @@ class _TipCard extends StatelessWidget {
       width: 160,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 32, color: Colors.black87),
           const SizedBox(height: 12),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 4),
           Text(
             subtitle,

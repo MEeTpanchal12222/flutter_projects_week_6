@@ -83,10 +83,15 @@ class _ProductDetailsContent extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0),
             child: IconButton(
               icon: Icon(
-                product.isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
+                product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border_rounded,
                 color: product.isFavorite ? AppTheme.primary : Colors.black,
               ),
-              onPressed: () => context.read<HomeProvider>().toggleFavorite(product.id, context),
+              onPressed: () => context.read<HomeProvider>().toggleFavorite(
+                product.id,
+                context,
+              ),
             ),
           ),
         ],
@@ -95,7 +100,9 @@ class _ProductDetailsContent extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.widthPercentage(8),
+              ),
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,8 +116,11 @@ class _ProductDetailsContent extends StatelessWidget {
                           fit: BoxFit.contain,
                           placeholder: (context, url) =>
                               const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error, size: 50, color: Colors.grey),
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.error,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
@@ -135,7 +145,10 @@ class _ProductDetailsContent extends StatelessWidget {
                             const SizedBox(width: 4),
                             Text(
                               '${product.rating}',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
                             Text(
                               '/5',
@@ -151,7 +164,10 @@ class _ProductDetailsContent extends StatelessWidget {
                     SizedBox(height: context.heightPercentage(2)),
                     Text(
                       'Description',
-                      style: GoogleFonts.cabin(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.cabin(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -173,10 +189,14 @@ class _ProductDetailsContent extends StatelessWidget {
               delegate: _StickyBottomDelegate(
                 child: Container(
                   height: 90.0,
-                  padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.widthPercentage(8),
+                  ),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5)),
+                    border: Border(
+                      bottom: BorderSide(color: Colors.black12, width: 0.5),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,10 +205,19 @@ class _ProductDetailsContent extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Price', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
+                          Text(
+                            'Price',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
+                          ),
                           Text(
                             '\$${product.price}',
-                            style: GoogleFonts.cabin(fontSize: 28, fontWeight: FontWeight.w900),
+                            style: GoogleFonts.cabin(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ],
                       ),
@@ -197,18 +226,23 @@ class _ProductDetailsContent extends StatelessWidget {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () async {
-                            await getIt<CartProvider>().addToCart(product.id);
-                            if (context.mounted) {
-                              showTopNotification(context, "added to cart!", isError: false);
-                            }
+                            await getIt<CartProvider>().addToCart(
+                              product.id,
+                              context,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff50AD98),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
                           ),
                           child: const Text(
                             "Add to Cart",
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -224,7 +258,9 @@ class _ProductDetailsContent extends StatelessWidget {
             ),
 
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.widthPercentage(8),
+              ),
               sliver: SliverToBoxAdapter(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +273,8 @@ class _ProductDetailsContent extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () => _showWriteReviewBottomSheet(context, product.id),
+                      onPressed: () =>
+                          _showWriteReviewBottomSheet(context, product.id),
                       child: Text(
                         "Write a Review",
                         style: GoogleFonts.cabin(
@@ -253,9 +290,14 @@ class _ProductDetailsContent extends StatelessWidget {
             ),
 
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8), vertical: 16),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.widthPercentage(8),
+                vertical: 16,
+              ),
               sliver: detailProvider.reviews.isEmpty
-                  ? const SliverToBoxAdapter(child: Center(child: Text("No reviews yet.")))
+                  ? const SliverToBoxAdapter(
+                      child: Center(child: Text("No reviews yet.")),
+                    )
                   : SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final review = detailProvider.reviews[index];
@@ -327,19 +369,26 @@ class _ProductDetailsContent extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 "Write a Review",
-                style: GoogleFonts.cabin(fontSize: 22, fontWeight: FontWeight.bold),
+                style: GoogleFonts.cabin(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
                 "How was your experience?",
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
               ),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(5, (index) {
                   return IconButton(
-                    onPressed: () => setModalState(() => selectedRating = index + 1),
+                    onPressed: () =>
+                        setModalState(() => selectedRating = index + 1),
                     icon: Icon(
                       index < selectedRating ? Icons.star : Icons.star_border,
                       color: Colors.amber,
@@ -349,7 +398,10 @@ class _ProductDetailsContent extends StatelessWidget {
                 }),
               ),
               const SizedBox(height: 24),
-              const Text("Your Feedback", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Your Feedback",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: commentCtrl,
@@ -380,13 +432,18 @@ class _ProductDetailsContent extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                   onPressed: provider.isSubmittingReview
                       ? null
                       : () async {
                           if (commentCtrl.text.trim().isEmpty) {
-                            showTopNotification(context, "Please enter your comments");
+                            showTopNotification(
+                              context,
+                              "Please enter your comments",
+                            );
 
                             return;
                           }
@@ -396,26 +453,23 @@ class _ProductDetailsContent extends StatelessWidget {
                               productId: productId,
                               rating: selectedRating,
                               comment: commentCtrl.text.trim(),
+                              context: context,
                             );
                             if (context.mounted) {
                               Navigator.pop(context);
-                              showTopNotification(
-                                context,
-                                "Review submitted successfully!",
-                                isError: false,
-                              );
                             }
                           } catch (e) {
-                            if (context.mounted) {
-                              showTopNotification(context, "Failed to submit review: $e");
-                            }
+                            // Error handled in provider/repo
                           }
                         },
                   child: provider.isSubmittingReview
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
                           "Submit Review",
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                 ),
               ),
@@ -435,7 +489,8 @@ class _ProductDetailsContent extends StatelessWidget {
           CircleAvatar(
             radius: 20,
             backgroundImage: NetworkImage(
-              review.userAvatar ?? "https://ui-avatars.com/api/?name=${review.userName}",
+              review.userAvatar ??
+                  "https://ui-avatars.com/api/?name=${review.userName}",
             ),
           ),
           const SizedBox(width: 12),
@@ -446,7 +501,10 @@ class _ProductDetailsContent extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(review.userName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      review.userName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     Text(
                       DateFormat('MMM d, yyyy').format(review.createdAt),
                       style: const TextStyle(color: Colors.grey, fontSize: 11),
@@ -459,14 +517,20 @@ class _ProductDetailsContent extends StatelessWidget {
                     (i) => Icon(
                       Icons.star,
                       size: 14,
-                      color: i < review.rating ? Colors.amber : Colors.grey[300],
+                      color: i < review.rating
+                          ? Colors.amber
+                          : Colors.grey[300],
                     ),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   review.comment,
-                  style: TextStyle(color: Colors.grey[800], height: 1.4, fontSize: 13),
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    height: 1.4,
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -486,7 +550,10 @@ class _ProductDetailsContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Similar Plants", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const Text(
+          "Similar Plants",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 16),
         SizedBox(
           height: 200,
@@ -510,7 +577,8 @@ class _ProductDetailsContent extends StatelessWidget {
                           height: 130,
                           width: 140,
                           fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(color: Colors.grey[100]),
+                          placeholder: (context, url) =>
+                              Container(color: Colors.grey[100]),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -549,7 +617,11 @@ class _StickyBottomDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 90.0;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return SizedBox.expand(child: child);
   }
 

@@ -34,7 +34,10 @@ class _CartContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "My Cart",
-          style: GoogleFonts.cabin(fontWeight: FontWeight.bold, color: Colors.black),
+          style: GoogleFonts.cabin(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
         centerTitle: true,
         backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
@@ -59,7 +62,8 @@ class _CartContent extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = provider.items[index];
                       return GestureDetector(
-                        onTap: () => PlantRoute(plantId: item.product.id).push(context),
+                        onTap: () =>
+                            PlantRoute(plantId: item.product.id).push(context),
 
                         child: Container(
                           padding: const EdgeInsets.all(12),
@@ -105,11 +109,16 @@ class _CartContent extends StatelessWidget {
                                 children: [
                                   QuantityButton(
                                     icon: Icons.remove,
-                                    onTap: () =>
-                                        provider.updateQuantity(item.id, item.quantity - 1),
+                                    onTap: () => provider.updateQuantity(
+                                      item.id,
+                                      item.quantity - 1,
+                                      context,
+                                    ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
                                     child: Text(
                                       "${item.quantity}",
                                       style: GoogleFonts.cabin(
@@ -120,8 +129,11 @@ class _CartContent extends StatelessWidget {
                                   ),
                                   QuantityButton(
                                     icon: Icons.add,
-                                    onTap: () =>
-                                        provider.updateQuantity(item.id, item.quantity + 1),
+                                    onTap: () => provider.updateQuantity(
+                                      item.id,
+                                      item.quantity + 1,
+                                      context,
+                                    ),
                                   ),
                                 ],
                               ),

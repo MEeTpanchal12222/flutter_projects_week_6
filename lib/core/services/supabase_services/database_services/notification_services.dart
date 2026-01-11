@@ -48,11 +48,20 @@ class NotificationRepository {
     );
   }
 
-   /// Mark a specific notification as read
-  Future<void> markAsRead(String id) async {
-    await _supabase
-        .from('notifications')
-        .update({'is_read': true})
-        .eq('id', id);
+  /// Mark a specific notification as read
+  Future<void> markAsRead(String id, BuildContext context) async {
+    try {
+      await _supabase
+          .from('notifications')
+          .update({'is_read': true})
+          .eq('id', id);
+    } catch (e) {
+      debugPrint("Error marking notification as read: $e");
+      if (context.mounted) {
+        // Optional: notify user or silent fail?
+        // User-centric: maybe just log it. But for the sake of "all services":
+        // showTopNotification(context, "Failed to update notification", isError: true);
+      }
+    }
   }
 }

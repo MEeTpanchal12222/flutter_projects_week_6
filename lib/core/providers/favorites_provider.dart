@@ -32,9 +32,9 @@ class FavoriteProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> toggleFavorite(String productId) async {
+  Future<void> toggleFavorite(String productId, BuildContext context) async {
     try {
-      await _repo.toggleFavorite(productId);
+      await _repo.toggleFavorite(productId, context);
     } catch (e) {
       debugPrint("Toggle Error: $e");
     }

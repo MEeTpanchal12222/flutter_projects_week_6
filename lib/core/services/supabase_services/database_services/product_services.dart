@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/base_model/product.dart';
 import 'package:flutter_projects_week_6/core/base_model/tips.dart';
 import 'package:flutter_projects_week_6/core/constant.dart';
@@ -15,51 +16,59 @@ class ProductRepository {
   Stream<List<Product>> getProducts() {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return Stream.value([]);
-    return _supabase.from('favorites').stream(primaryKey: ['id']).eq('user_id', userId).asyncMap((
-      favRows,
-    ) async {
-      try {
-        final productRows = await _supabase.from(AppConstants.productsTable).select();
+    return _supabase
+        .from('favorites')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .asyncMap((favRows) async {
+          try {
+            final productRows = await _supabase
+                .from(AppConstants.productsTable)
+                .select();
 
-        final likedIds = favRows.map((f) => f['product_id'] as String).toSet();
+            final likedIds = favRows
+                .map((f) => f['product_id'] as String)
+                .toSet();
 
-        return (productRows as List).map((map) {
-          final isLiked = likedIds.contains(map['id']);
+            return (productRows as List).map((map) {
+              final isLiked = likedIds.contains(map['id']);
 
-          final product = Product.fromMap(map);
+              final product = Product.fromMap(map);
 
-          return product.copyWith(isFavorite: isLiked);
-        }).toList();
-      } catch (e, st) {
-        log("Error mapping products stream", error: e, stackTrace: st);
-        return [];
-      }
-    });
+              return product.copyWith(isFavorite: isLiked);
+            }).toList();
+          } catch (e, st) {
+            log("Error mapping products stream", error: e, stackTrace: st);
+            return [];
+          }
+        });
   }
 
   Stream<Product?> getProductById({required String productId}) {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return Stream.value(null);
-    return _supabase.from('favorites').stream(primaryKey: ['id']).eq('user_id', userId).asyncMap((
-      favRows,
-    ) async {
-      try {
-        final productData = await _supabase
-            .from(AppConstants.productsTable)
-            .select()
-            .eq('id', productId)
-            .maybeSingle();
+    return _supabase
+        .from('favorites')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .asyncMap((favRows) async {
+          try {
+            final productData = await _supabase
+                .from(AppConstants.productsTable)
+                .select()
+                .eq('id', productId)
+                .maybeSingle();
 
-        if (productData == null) return null;
+            if (productData == null) return null;
 
-        final isLiked = favRows.any((f) => f['product_id'] == productId);
+            final isLiked = favRows.any((f) => f['product_id'] == productId);
 
-        return Product.fromMap(productData).copyWith(isFavorite: isLiked);
-      } catch (e, st) {
-        log("Error mapping products stream", error: e, stackTrace: st);
-        return null;
-      }
-    });
+            return Product.fromMap(productData).copyWith(isFavorite: isLiked);
+          } catch (e, st) {
+            log("Error mapping products stream", error: e, stackTrace: st);
+            return null;
+          }
+        });
   }
 
   Future<List<Review>> getPlantReviews({
@@ -97,15 +106,41 @@ class ProductRepository {
     required String productId,
     required int rating,
     required String comment,
+    required BuildContext context,
   }) async {
     final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) throw Exception("You must be logged in to review");
-    await _supabase.from('reviews').insert({
-      'product_id': productId,
-      'user_id': userId,
-      'rating': rating,
-      'comment': comment,
-    });
+    if (userId == null) {
+      if (context.mounted) {
+        showTopNotification(
+          context,
+          "You must be logged in to review",
+          isError: true,
+        );
+      }
+      // Depending on logic, we might still throw or just return.
+      // throw Exception("You must be logged in to review");
+      return;
+    }
+    try {
+      await _supabase.from('reviews').insert({
+        'product_id': productId,
+        'user_id': userId,
+        'rating': rating,
+        'comment': comment,
+      });
+      if (context.mounted) {
+        showTopNotification(
+          context,
+          "Review added successfully",
+          isError: false,
+        );
+      }
+    } catch (e, st) {
+      log("Error adding review", error: e, stackTrace: st);
+      if (context.mounted) {
+        showTopNotification(context, "Failed to add review", isError: true);
+      }
+    }
   }
 
   Future<List<Product>> getSimilarPlants({
@@ -150,7 +185,11 @@ class ProductRepository {
   }
 
   Future<List<Product>> getPopularProducts() async {
-    final response = await _supabase.from('products').select().eq('is_featured', true).limit(5);
+    final response = await _supabase
+        .from('products')
+        .select()
+        .eq('is_featured', true)
+        .limit(5);
     return (response as List).map((e) => Product.fromMap(e)).toList();
   }
 
@@ -179,7 +218,7 @@ class ProductRepository {
         .map((data) => data.map((e) => e['product_id'] as String).toSet());
   }
 
-  Future<void> toggleLike(String productId, context) async {
+  Future<void> toggleLike(String productId, BuildContext context) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) return;
@@ -200,14 +239,25 @@ class ProductRepository {
               .eq('user_id', userId)
               .eq('product_id', productId);
 
-          showTopNotification(context, "Removed from Favorites", isError: false);
+          if (context.mounted) {
+            showTopNotification(
+              context,
+              "Removed from Favorites",
+              isError: false,
+            );
+          }
         } on Error catch (Error) {
           log(Error.toString());
         }
       } else {
         try {
-          await _supabase.from('favorites').insert({'user_id': userId, 'product_id': productId});
-          showTopNotification(context, "Added to Favorites", isError: false);
+          await _supabase.from('favorites').insert({
+            'user_id': userId,
+            'product_id': productId,
+          });
+          if (context.mounted) {
+            showTopNotification(context, "Added to Favorites", isError: false);
+          }
         } on PostgrestException catch (e) {
           if (e.code == '23505') {
             await _supabase
@@ -215,6 +265,14 @@ class ProductRepository {
                 .delete()
                 .eq('user_id', userId)
                 .eq('product_id', productId);
+            // Also notify here? Maybe removed?
+            if (context.mounted) {
+              showTopNotification(
+                context,
+                "Removed from Favorites",
+                isError: false,
+              );
+            }
           } else {
             rethrow;
           }
@@ -222,7 +280,10 @@ class ProductRepository {
       }
     } catch (e, st) {
       log("Error toggling like", error: e, stackTrace: st);
-      rethrow;
+      if (context.mounted) {
+        showTopNotification(context, "An error occurred", isError: true);
+      }
+      // rethrow; // We handled it with notification
     }
   }
 }

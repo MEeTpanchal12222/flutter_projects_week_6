@@ -3,13 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/base_model/product.dart';
 import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/home_provider.dart';
-import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
-import 'common_top_notification.dart';
 
 class ProductCard extends StatelessWidget {
   Product product;
@@ -69,8 +66,11 @@ class ProductCard extends StatelessWidget {
                         fit: BoxFit.contain,
                         placeholder: (context, url) =>
                             const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.local_florist, size: 50, color: Colors.grey),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.local_florist,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
@@ -80,12 +80,12 @@ class ProductCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        InkWell(
-                          onTap: () async {
-                            await getIt<CartProvider>().addToCart(product.id);
-                            if (context.mounted) {
-                              showTopNotification(context, "added to cart!", isError: false);
-                            }
+                        GestureDetector(
+                          onTap: () {
+                            context.read<CartProvider>().addToCart(
+                              product.id,
+                              context,
+                            );
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -112,8 +112,9 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () =>
-                              context.read<HomeProvider>().toggleFavorite(product.id, context),
+                          onTap: () => context
+                              .read<HomeProvider>()
+                              .toggleFavorite(product.id, context),
                           child: Container(
                             height: 50,
                             width: 50,
@@ -129,7 +130,9 @@ class ProductCard extends StatelessWidget {
                               ],
                             ),
                             child: Icon(
-                              product.isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
+                              product.isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border_rounded,
                               color: product.isFavorite
                                   ? AppTheme.primary.withValues(alpha: 1)
                                   : Colors.white,
