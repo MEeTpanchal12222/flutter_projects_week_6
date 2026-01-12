@@ -29,7 +29,7 @@ class _OrderContent extends StatelessWidget {
         title: const Text("My Orders", style: TextStyle(color: Colors.black)),
         backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
-        leading: const BackButton(color: Colors.black),
+        leading: IconButton(onPressed: () => context.pop(), icon: const Icon(Icons.arrow_back)),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())

@@ -48,7 +48,12 @@ class _ProductDetailsContent extends StatelessWidget {
     final product = detailProvider.product;
 
     if (detailProvider.isLoadingProduct && product == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        color: AppTheme.backgroundLight,
+        child: Center(child: CircularProgressIndicator(color: AppTheme.primary)),
+      );
     }
 
     if (product == null) {

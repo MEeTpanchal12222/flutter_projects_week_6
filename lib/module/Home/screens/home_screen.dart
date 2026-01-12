@@ -35,170 +35,180 @@ class _HomeContent extends StatelessWidget {
     final provider = context.watch<HomeProvider>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: (!provider.isLoading) ? Colors.white : AppTheme.backgroundLight,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 13),
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Text(
-                      'Find your\n favorite plants',
-                      style: GoogleFonts.cabin(
-                        textStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: screenWidth * 0.08,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => const SearchRoute().push(context),
-                      child: Container(
-                        height: screenWidth * 0.13,
-                        width: screenWidth * 0.13,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(Icons.search, size: 30),
-                      ),
-                    ),
-                  ],
-                ),
-                Image.asset("Assets/banner.png"),
-                const SizedBox(height: 25),
-                SizedBox(
-                  width: double.infinity,
-                  height: context.hightForButton(45),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CommonTabButton(
-                          provider: provider,
-                          label: 'All',
-                          isActive: provider.selectedCategoryId == 0,
-                          onTap: () => provider.selectCategory(0),
-                        ),
-                        ...provider.categories.map(
-                          (cat) => CommonTabButton(
-                            provider: provider,
-                            label: cat['name'] ?? '',
-                            isActive: provider.selectedCategoryId == cat['id'],
-                            onTap: () => provider.selectCategory(cat['id']),
+          child: (!provider.isLoading)
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 13),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Text(
+                            'Find your\n favorite plants',
+                            style: GoogleFonts.cabin(
+                              textStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: screenWidth * 0.08,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                        if (provider.categories.isEmpty) ...[
-                          CommonTabButton(provider: provider, label: 'Indoor', onTap: () {}),
-                          CommonTabButton(provider: provider, label: 'Outdoor', onTap: () {}),
-                          CommonTabButton(provider: provider, label: 'Popular', onTap: () {}),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () => const SearchRoute().push(context),
+                            child: Container(
+                              height: screenWidth * 0.13,
+                              width: screenWidth * 0.13,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Icon(Icons.search, size: 30),
+                            ),
+                          ),
                         ],
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: context.heightPercentage(2.5)),
-
-                _buildSectionTitle(context, "Popular"),
-                SizedBox(height: context.heightPercentage(1.5)),
-
-                if (provider.products.isNotEmpty)
-                  SizedBox(
-                    width: 370,
-                    height: 400,
-                    child: ListView.builder(
-                      itemCount: provider.filterProduct.length,
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        if (provider.filterProduct.isNotEmpty) {
-                          final product = provider.filterProduct[index];
-                          return GestureDetector(
-                            onTap: () => PlantRoute(plantId: product.id).push(context),
-                            child: ProductCard(product: product),
-                          );
-                        } else {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      Image.asset("Assets/banner.png"),
+                      const SizedBox(height: 25),
+                      SizedBox(
+                        width: double.infinity,
+                        height: context.hightForButton(45),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "No plants found",
-                                  style: GoogleFonts.cabin(fontSize: 16, color: AppTheme.primary),
+                              CommonTabButton(
+                                provider: provider,
+                                label: 'All',
+                                isActive: provider.selectedCategoryId == 0,
+                                onTap: () => provider.selectCategory(0),
+                              ),
+                              ...provider.categories.map(
+                                (cat) => CommonTabButton(
+                                  provider: provider,
+                                  label: cat['name'] ?? '',
+                                  isActive: provider.selectedCategoryId == cat['id'],
+                                  onTap: () => provider.selectCategory(cat['id']),
                                 ),
                               ),
+                              if (provider.categories.isEmpty) ...[
+                                CommonTabButton(provider: provider, label: 'Indoor', onTap: () {}),
+                                CommonTabButton(provider: provider, label: 'Outdoor', onTap: () {}),
+                                CommonTabButton(provider: provider, label: 'Popular', onTap: () {}),
+                              ],
                             ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: context.heightPercentage(2.5)),
+
+                      _buildSectionTitle(context, "Popular"),
+                      SizedBox(height: context.heightPercentage(1.5)),
+
+                      if (provider.products.isNotEmpty)
+                        SizedBox(
+                          width: 370,
+                          height: 400,
+                          child: ListView.builder(
+                            itemCount: provider.filterProduct.length,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              if (provider.filterProduct.isNotEmpty) {
+                                final product = provider.filterProduct[index];
+                                return GestureDetector(
+                                  onTap: () => PlantRoute(plantId: product.id).push(context),
+                                  child: ProductCard(product: product),
+                                );
+                              } else {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "No plants found",
+                                        style: GoogleFonts.cabin(
+                                          fontSize: 16,
+                                          color: AppTheme.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      if (provider.products.isEmpty && !provider.isLoading)
+                        Container(
+                          height: 200,
+                          alignment: Alignment.center,
+                          child: const Text("No plants found"),
+                        ),
+                      SizedBox(height: context.heightPercentage(3)),
+
+                      _buildSectionTitle(context, "New Arrivals"),
+                      SizedBox(height: context.heightPercentage(1.5)),
+
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: provider.newArrivals.length,
+                        itemBuilder: (context, index) {
+                          final product = provider.newArrivals[index];
+                          return GestureDetector(
+                            onTap: () {
+                              PlantRoute(plantId: product.id).push(context);
+                            },
+                            child: _NewArrivalCard(product: product),
                           );
-                        }
-                      },
-                    ),
-                  ),
-                if (provider.products.isEmpty)
-                  Container(
-                    height: 200,
-                    alignment: Alignment.center,
-                    child: const Text("No plants found"),
-                  ),
-                SizedBox(height: context.heightPercentage(3)),
+                        },
+                      ),
 
-                _buildSectionTitle(context, "New Arrivals"),
-                SizedBox(height: context.heightPercentage(1.5)),
+                      SizedBox(height: context.heightPercentage(3)),
 
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: provider.newArrivals.length,
-                  itemBuilder: (context, index) {
-                    final product = provider.newArrivals[index];
-                    return GestureDetector(
-                      onTap: () {
-                        PlantRoute(plantId: product.id).push(context);
-                      },
-                      child: _NewArrivalCard(product: product),
-                    );
-                  },
+                      _buildSectionTitle(context, "Plant Care Tips"),
+                      SizedBox(height: context.heightPercentage(1.5)),
+
+                      SizedBox(
+                        height: context.heightPercentage(18),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: provider.tips.length,
+                          itemBuilder: (context, index) {
+                            final tip = provider.tips[index];
+
+                            IconData iconData = Icons.help_outline;
+                            if (tip.iconName == 'water_drop') iconData = Icons.water_drop;
+                            if (tip.iconName == 'wb_sunny') iconData = Icons.wb_sunny;
+                            if (tip.iconName == 'grass') iconData = Icons.grass;
+
+                            return _TipCard(
+                              title: tip.title,
+                              subtitle: tip.subtitle,
+                              color: Color(tip.colorValue),
+                              icon: iconData,
+                            );
+                          },
+                        ),
+                      ),
+
+                      SizedBox(height: context.heightPercentage(5)),
+                    ],
+                  ),
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  color: AppTheme.backgroundLight,
+                  child: Center(child: CircularProgressIndicator(color: AppTheme.primary)),
                 ),
-
-                SizedBox(height: context.heightPercentage(3)),
-
-                _buildSectionTitle(context, "Plant Care Tips"),
-                SizedBox(height: context.heightPercentage(1.5)),
-
-                SizedBox(
-                  height: context.heightPercentage(18),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: provider.tips.length,
-                    itemBuilder: (context, index) {
-                      final tip = provider.tips[index];
-
-                      IconData iconData = Icons.help_outline;
-                      if (tip.iconName == 'water_drop') iconData = Icons.water_drop;
-                      if (tip.iconName == 'wb_sunny') iconData = Icons.wb_sunny;
-                      if (tip.iconName == 'grass') iconData = Icons.grass;
-
-                      return _TipCard(
-                        title: tip.title,
-                        subtitle: tip.subtitle,
-                        color: Color(tip.colorValue),
-                        icon: iconData,
-                      );
-                    },
-                  ),
-                ),
-
-                SizedBox(height: context.heightPercentage(5)),
-              ],
-            ),
-          ),
         ),
       ),
     );
