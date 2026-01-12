@@ -9,6 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/empty_widget.dart';
+import '../widgets/search_row_widget.dart';
+
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
@@ -85,9 +88,9 @@ class _SearchContent extends StatelessWidget {
               child: provider.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : provider.searchResults.isEmpty && provider.searchCtrl.text.isNotEmpty
-                  ? _buildEmptyState(context)
+                  ? buildEmptyState()
                   : provider.searchResults.isEmpty
-                  ? _buildInitialState(context)
+                  ? buildInitialState()
                   : ListView.builder(
                       padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(5)),
                       itemCount: provider.searchResults.length,
@@ -151,50 +154,6 @@ class _SearchContent extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.search_off, size: 64, color: Colors.grey[300]),
-          const SizedBox(height: 16),
-          Text("No results found", style: TextStyle(color: Colors.grey[600], fontSize: 16)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInitialState(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(5)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Popular Searches",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            children: ["Monstera", "Aloe", "Cactus", "Indoor"]
-                .map(
-                  (term) => Chip(
-                    label: Text(term),
-                    backgroundColor: Colors.grey[100],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide.none,
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
       ),
     );
   }

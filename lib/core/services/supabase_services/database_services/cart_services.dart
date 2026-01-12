@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/base_model/cartItem.dart';
 import 'package:flutter_projects_week_6/core/constant.dart';
@@ -31,11 +32,7 @@ class CartRepository {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
       if (context.mounted) {
-        showTopNotification(
-          context,
-          "Please log in to add items to cart",
-          isError: true,
-        );
+        showTopNotification(context, "Please log in to add items to cart", isError: true);
       }
       return;
     }
@@ -66,20 +63,12 @@ class CartRepository {
     } catch (e, st) {
       log("Error adding to cart", error: e, stackTrace: st);
       if (context.mounted) {
-        showTopNotification(
-          context,
-          "Could not add to cart. Please try again.",
-          isError: true,
-        );
+        showTopNotification(context, "Could not add to cart. Please try again.", isError: true);
       }
     }
   }
 
-  Future<void> updateQuantity(
-    String itemId,
-    int quantity,
-    BuildContext context,
-  ) async {
+  Future<void> updateQuantity(String itemId, int quantity, BuildContext context) async {
     try {
       if (quantity <= 0) {
         await _supabase.from(AppConstants.cartTable).delete().eq('id', itemId);
@@ -92,11 +81,7 @@ class CartRepository {
     } catch (e, st) {
       log("Error updating cart quantity", error: e, stackTrace: st);
       if (context.mounted) {
-        showTopNotification(
-          context,
-          "Failed to update quantity.",
-          isError: true,
-        );
+        showTopNotification(context, "Failed to update quantity.", isError: true);
       }
     }
   }
@@ -120,26 +105,15 @@ class CartRepository {
           .select()
           .single();
 
-      await _supabase
-          .from(AppConstants.cartTable)
-          .delete()
-          .eq('user_id', userId);
+      await _supabase.from(AppConstants.cartTable).delete().eq('user_id', userId);
 
       if (context.mounted) {
-        showTopNotification(
-          context,
-          "Order placed successfully!",
-          isError: false,
-        );
+        showTopNotification(context, "Order placed successfully!", isError: false);
       }
     } catch (e, st) {
       log("Error during checkout", error: e, stackTrace: st);
       if (context.mounted) {
-        showTopNotification(
-          context,
-          "Checkout failed. Please try again.",
-          isError: true,
-        );
+        showTopNotification(context, "Checkout failed. Please try again.", isError: true);
       }
     }
   }

@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/services/supabase_services/auth_services/auth_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _repo;
-  AuthProvider(this._repo);
+
+  static const String _keyEmail = 'remembered_email';
+  static const String _keyPass = 'remembered_password';
+  static const String _keyRememberMe = 'remember_me_status';
+
+  AuthProvider(this._repo) {
+    _loadSavedCredentials(); // Load data when the provider is created
+  }
 
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
@@ -20,6 +28,30 @@ class AuthProvider extends ChangeNotifier {
   bool get obscurePassword => _obscurePassword;
   bool get rememberMe => _rememberMe;
   bool get agreeToTerms => _agreeToTerms;
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    _rememberMe = prefs.getBool(_keyRememberMe) ?? false;
+
+    if (_rememberMe) {
+      emailCtrl.text = prefs.getString(_keyEmail) ?? '';
+      passCtrl.text = prefs.getString(_keyPass) ?? '';
+    }
+    notifyListeners();
+  }
+
+  Future<void> _handleRememberMe() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setString(_keyEmail, emailCtrl.text.trim());
+      await prefs.setString(_keyPass, passCtrl.text.trim());
+      await prefs.setBool(_keyRememberMe, true);
+    } else {
+      await prefs.remove(_keyEmail);
+      await prefs.remove(_keyPass);
+      await prefs.setBool(_keyRememberMe, false);
+    }
+  }
 
   void toggleAuthMode() {
     _isSignUp = !_isSignUp;
@@ -93,6 +125,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     try {
       await _repo.signIn(emailCtrl.text, passCtrl.text, context);
+      await _handleRememberMe();
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -93,7 +93,7 @@ class AddPlantProvider extends ChangeNotifier {
         'price': double.tryParse(priceCtrl.text) ?? 0.0,
         'category_id': selectedCategoryId,
         'image_url': imageUrl,
-        'rating': 5.0,
+        'rating': 0.0,
       });
 
       _clearForm();

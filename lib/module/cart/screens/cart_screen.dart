@@ -34,17 +34,19 @@ class _CartContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "My Cart",
-          style: GoogleFonts.cabin(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: GoogleFonts.cabin(fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
         backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
       ),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: AppTheme.backgroundLight,
+              child: Center(child: CircularProgressIndicator(color: AppTheme.primary)),
+            )
           : provider.items.isEmpty
           ? Center(
               child: Text(
@@ -62,8 +64,7 @@ class _CartContent extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = provider.items[index];
                       return GestureDetector(
-                        onTap: () =>
-                            PlantRoute(plantId: item.product.id).push(context),
+                        onTap: () => PlantRoute(plantId: item.product.id).push(context),
 
                         child: Container(
                           padding: const EdgeInsets.all(12),
@@ -116,9 +117,7 @@ class _CartContent extends StatelessWidget {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
                                     child: Text(
                                       "${item.quantity}",
                                       style: GoogleFonts.cabin(

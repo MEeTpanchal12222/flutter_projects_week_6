@@ -1,10 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_projects_week_6/core/base_model/product.dart';
-import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
 import 'package:flutter_projects_week_6/core/providers/home_provider.dart';
 import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
+import 'package:flutter_projects_week_6/module/Home/widgets/tips_card.dart';
 import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
 import 'package:flutter_projects_week_6/utils/widgets/common_product_card.dart';
 import 'package:flutter_projects_week_6/utils/widgets/common_tab_button.dart';
@@ -12,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/theme/app_theme.dart';
+import '../widgets/new_arrival_card.dart';
+import '../widgets/section_title.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -105,7 +105,7 @@ class _HomeContent extends StatelessWidget {
                       ),
                       SizedBox(height: context.heightPercentage(2.5)),
 
-                      _buildSectionTitle(context, "Popular"),
+                      SectionTitle(title: "Popular"),
                       SizedBox(height: context.heightPercentage(1.5)),
 
                       if (provider.products.isNotEmpty)
@@ -121,7 +121,7 @@ class _HomeContent extends StatelessWidget {
                                 final product = provider.filterProduct[index];
                                 return GestureDetector(
                                   onTap: () => PlantRoute(plantId: product.id).push(context),
-                                  child: ProductCard(product: product),
+                                  child: ProductCard(product: product, context: context),
                                 );
                               } else {
                                 return Row(
@@ -152,7 +152,7 @@ class _HomeContent extends StatelessWidget {
                         ),
                       SizedBox(height: context.heightPercentage(3)),
 
-                      _buildSectionTitle(context, "New Arrivals"),
+                      SectionTitle(title: "New Arrivals"),
                       SizedBox(height: context.heightPercentage(1.5)),
 
                       ListView.builder(
@@ -165,14 +165,14 @@ class _HomeContent extends StatelessWidget {
                             onTap: () {
                               PlantRoute(plantId: product.id).push(context);
                             },
-                            child: _NewArrivalCard(product: product),
+                            child: NewArrivalCard(product: product),
                           );
                         },
                       ),
 
                       SizedBox(height: context.heightPercentage(3)),
 
-                      _buildSectionTitle(context, "Plant Care Tips"),
+                      SectionTitle(title: '"Plant Care Tips"'),
                       SizedBox(height: context.heightPercentage(1.5)),
 
                       SizedBox(
@@ -188,7 +188,7 @@ class _HomeContent extends StatelessWidget {
                             if (tip.iconName == 'wb_sunny') iconData = Icons.wb_sunny;
                             if (tip.iconName == 'grass') iconData = Icons.grass;
 
-                            return _TipCard(
+                            return TipCard(
                               title: tip.title,
                               subtitle: tip.subtitle,
                               color: Color(tip.colorValue),
@@ -209,139 +209,6 @@ class _HomeContent extends StatelessWidget {
                   child: Center(child: CircularProgressIndicator(color: AppTheme.primary)),
                 ),
         ),
-      ),
-    );
-  }
-}
-
-Widget _buildSectionTitle(BuildContext context, String title) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        title,
-        style: GoogleFonts.cabin(
-          textStyle: TextStyle(
-            fontSize: context.responsiveTextSize(20),
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      Text(
-        "See all",
-        style: TextStyle(
-          color: Colors.grey,
-          fontWeight: FontWeight.w600,
-          fontSize: context.responsiveTextSize(14),
-        ),
-      ),
-    ],
-  );
-}
-
-class _NewArrivalCard extends StatelessWidget {
-  Product product;
-
-  _NewArrivalCard({required this.product});
-
-  @override
-  Widget build(context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: CachedNetworkImage(
-              imageUrl: product.imageUrl,
-              height: 80,
-              width: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                const SizedBox(height: 4),
-                Text("Indoor • Easy Care", style: TextStyle(color: Colors.grey[500], fontSize: 12)),
-                const SizedBox(height: 8),
-                Text(
-                  "\$${product.price}",
-                  style: GoogleFonts.cabin(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-          InkWell(
-            onTap: () async {
-              await getIt<CartProvider>().addToCart(product.id, context);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.add, color: Colors.white, size: 20),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TipCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Color color;
-  final IconData icon;
-
-  const _TipCard({
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(20)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 32, color: Colors.black87),
-          const SizedBox(height: 12),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            maxLines: 3,
-            style: GoogleFonts.cabin(
-              color: Colors.black.withValues(alpha: 0.6),
-              fontSize: 12,
-              textStyle: TextStyle(overflow: TextOverflow.ellipsis),
-            ),
-          ),
-        ],
       ),
     );
   }

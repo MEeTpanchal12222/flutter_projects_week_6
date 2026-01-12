@@ -7,7 +7,9 @@ import '../../../core/providers/add_plant_provider.dart';
 import '../../../core/services/di.dart';
 import '../../../utils/Extension/responsive_ui_extension.dart';
 import '../../../utils/theme/app_theme.dart';
+import '../../../utils/theme/input_decoration.dart';
 import '../../../utils/widgets/common_top_notification.dart';
+import '../widgets/label.dart';
 
 class AddPlantScreen extends StatefulWidget {
   const AddPlantScreen({super.key});
@@ -22,7 +24,7 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => getIt<AddPlantProvider>(),
+      create: (_) => getIt<AddPlantProvider>()..fetchCategories(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -80,19 +82,19 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                     ),
                     const SizedBox(height: 25),
 
-                    _buildLabel("Plant Name"),
+                    Label(text: "Plant Name"),
                     TextFormField(
                       controller: provider.nameCtrl,
-                      decoration: _inputDecoration("e.g. Fiddle Leaf Fig"),
+                      decoration: inputDecoration("e.g. Fiddle Leaf Fig"),
                       validator: (v) => v!.isEmpty ? "Please enter a name" : null,
                     ),
                     const SizedBox(height: 20),
 
-                    _buildLabel("Description"),
+                    Label(text: "Description"),
                     TextFormField(
                       controller: provider.descCtrl,
                       maxLines: 3,
-                      decoration: _inputDecoration("Tell us about this plant..."),
+                      decoration: inputDecoration("Tell us about this plant..."),
                     ),
                     const SizedBox(height: 20),
 
@@ -102,11 +104,11 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildLabel("Price (\$)"),
+                              Label(text: "Price (\$)"),
                               TextFormField(
                                 controller: provider.priceCtrl,
                                 keyboardType: TextInputType.number,
-                                decoration: _inputDecoration("0.00"),
+                                decoration: inputDecoration("0.00"),
                                 validator: (v) => v!.isEmpty ? "Required" : null,
                               ),
                             ],
@@ -117,14 +119,20 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildLabel("Category"),
+                              Label(text: "Category"),
                               DropdownButtonFormField<int>(
                                 initialValue: provider.selectedCategoryId,
-                                decoration: _inputDecoration("Select"),
-                                items: const [
-                                  DropdownMenuItem(value: 1, child: Text("Indoor")),
-                                  DropdownMenuItem(value: 2, child: Text("Outdoor")),
-                                ],
+                                decoration: inputDecoration("Select"),
+                                borderRadius: BorderRadius.circular(12),
+                                barrierDismissible: true,
+                                dropdownColor: AppTheme.backgroundLight,
+                                focusColor: AppTheme.primary.withValues(alpha: 0.1),
+                                items: context.read<AddPlantProvider>().categories.map((category) {
+                                  return DropdownMenuItem<int>(
+                                    value: category['id'] as int,
+                                    child: Text(category['name'] as String),
+                                  );
+                                }).toList(),
                                 onChanged: (val) => provider.setCategory(val!),
                               ),
                             ],
@@ -154,7 +162,11 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
                                 if (_formKey.currentState!.validate()) {
                                   final success = await provider.addPlant();
                                   if (success && mounted) {
-                                    showTopNotification(context, "Plant added successfully!");
+                                    showTopNotification(
+                                      context,
+                                      "Plant added successfully!",
+                                      isError: false,
+                                    );
 
                                     Navigator.pop(context);
                                   }
@@ -179,30 +191,6 @@ class _AddPlantScreenState extends State<AddPlantScreen> {
           },
         ),
       ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: 4),
-      child: Text(text, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-    );
-  }
-
-  InputDecoration _inputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      filled: true,
-      fillColor: Colors.grey[50],
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      contentPadding: const EdgeInsets.all(16),
     );
   }
 }

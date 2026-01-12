@@ -27,18 +27,17 @@ class HomeProvider extends ChangeNotifier {
       final staticData = await Future.wait([
         _repo.getCategories(),
         _repo.getTips(),
-        _repo.getPopularProducts(),
         _repo.getNewArrivals(),
       ]);
 
       categories = staticData[0] as List<Map<String, dynamic>>;
       tips = staticData[1] as List<Tip>;
-      popularProducts = staticData[2] as List<Product>;
-      newArrivals = staticData[3] as List<Product>;
+      newArrivals = staticData[2] as List<Product>;
 
       _productsSubscription?.cancel();
-      _productsSubscription = _repo.getProducts().listen((updatedProducts) {
+      _productsSubscription = _repo.getProducts().listen((updatedProducts) async {
         products = updatedProducts;
+        newArrivals = await _repo.getNewArrivals();
         _applyFilters();
       });
     } catch (e) {

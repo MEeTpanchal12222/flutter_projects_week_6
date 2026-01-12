@@ -1,19 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_projects_week_6/core/base_model/review.dart';
 import 'package:flutter_projects_week_6/core/providers/cart_provider.dart';
-import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/utils/Extension/responsive_ui_extension.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/home_provider.dart';
 import '../../../core/providers/product_details_provider.dart';
-import '../../../utils/widgets/common_top_notification.dart';
+import '../widgets/review_bottomsheet.dart';
+import '../widgets/review_item.dart';
+import '../widgets/similar_products_card.dart';
 
 class ProductScreen extends StatelessWidget {
   final String productId;
@@ -88,15 +87,10 @@ class _ProductDetailsContent extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0),
             child: IconButton(
               icon: Icon(
-                product.isFavorite
-                    ? Icons.favorite
-                    : Icons.favorite_border_rounded,
+                product.isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
                 color: product.isFavorite ? AppTheme.primary : Colors.black,
               ),
-              onPressed: () => context.read<HomeProvider>().toggleFavorite(
-                product.id,
-                context,
-              ),
+              onPressed: () => context.read<HomeProvider>().toggleFavorite(product.id, context),
             ),
           ),
         ],
@@ -105,9 +99,7 @@ class _ProductDetailsContent extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverPadding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.widthPercentage(8),
-              ),
+              padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),
               sliver: SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,11 +113,8 @@ class _ProductDetailsContent extends StatelessWidget {
                           fit: BoxFit.contain,
                           placeholder: (context, url) =>
                               const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.error,
-                            size: 50,
-                            color: Colors.grey,
-                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error, size: 50, color: Colors.grey),
                         ),
                       ),
                     ),
@@ -150,10 +139,7 @@ class _ProductDetailsContent extends StatelessWidget {
                             const SizedBox(width: 4),
                             Text(
                               '${product.rating}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             Text(
                               '/5',
@@ -169,10 +155,7 @@ class _ProductDetailsContent extends StatelessWidget {
                     SizedBox(height: context.heightPercentage(2)),
                     Text(
                       'Description',
-                      style: GoogleFonts.cabin(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: GoogleFonts.cabin(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -193,15 +176,11 @@ class _ProductDetailsContent extends StatelessWidget {
               pinned: true,
               delegate: _StickyBottomDelegate(
                 child: Container(
-                  height: 90.0,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.widthPercentage(8),
-                  ),
+                  height: 120.0,
+                  padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    border: Border(
-                      bottom: BorderSide(color: Colors.black12, width: 0.5),
-                    ),
+                    border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,19 +189,10 @@ class _ProductDetailsContent extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Price',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
-                            ),
-                          ),
+                          Text('Price', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
                           Text(
                             '\$${product.price}',
-                            style: GoogleFonts.cabin(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                            ),
+                            style: GoogleFonts.cabin(fontSize: 28, fontWeight: FontWeight.w900),
                           ),
                         ],
                       ),
@@ -231,23 +201,15 @@ class _ProductDetailsContent extends StatelessWidget {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () async {
-                            await getIt<CartProvider>().addToCart(
-                              product.id,
-                              context,
-                            );
+                            await getIt<CartProvider>().addToCart(product.id, context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff50AD98),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                           ),
                           child: const Text(
                             "Add to Cart",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -259,13 +221,11 @@ class _ProductDetailsContent extends StatelessWidget {
 
             SliverPadding(
               padding: EdgeInsets.all(context.widthPercentage(8)),
-              sliver: SliverToBoxAdapter(child: _buildSimilarPlants(context)),
+              sliver: SliverToBoxAdapter(child: buildSimilarPlants()),
             ),
 
             SliverPadding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.widthPercentage(8),
-              ),
+              padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),
               sliver: SliverToBoxAdapter(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -278,8 +238,7 @@ class _ProductDetailsContent extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () =>
-                          _showWriteReviewBottomSheet(context, product.id),
+                      onPressed: () => showWriteReviewBottomSheet(context, product.id),
                       child: Text(
                         "Write a Review",
                         style: GoogleFonts.cabin(
@@ -295,18 +254,13 @@ class _ProductDetailsContent extends StatelessWidget {
             ),
 
             SliverPadding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.widthPercentage(8),
-                vertical: 16,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8), vertical: 16),
               sliver: detailProvider.reviews.isEmpty
-                  ? const SliverToBoxAdapter(
-                      child: Center(child: Text("No reviews yet.")),
-                    )
+                  ? const SliverToBoxAdapter(child: Center(child: Text("No reviews yet.")))
                   : SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final review = detailProvider.reviews[index];
-                        return _buildReviewItem(review);
+                        return buildReviewItem(review: review);
                       }, childCount: detailProvider.reviews.length),
                     ),
             ),
@@ -336,280 +290,6 @@ class _ProductDetailsContent extends StatelessWidget {
       ),
     );
   }
-
-  void _showWriteReviewBottomSheet(BuildContext context, String productId) {
-    final provider = context.read<PlantDetailProvider>();
-    final commentCtrl = TextEditingController();
-    int selectedRating = 5;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Padding(
-          padding: EdgeInsets.only(
-            top: 24,
-            left: 24,
-            right: 24,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                "Write a Review",
-                style: GoogleFonts.cabin(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                "How was your experience?",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return IconButton(
-                    onPressed: () =>
-                        setModalState(() => selectedRating = index + 1),
-                    icon: Icon(
-                      index < selectedRating ? Icons.star : Icons.star_border,
-                      color: Colors.amber,
-                      size: 40,
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                "Your Feedback",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: commentCtrl,
-                maxLines: 4,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(
-                  hintText: "Tell others what you love about this plant...",
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppTheme.primary),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: provider.isSubmittingReview
-                      ? null
-                      : () async {
-                          if (commentCtrl.text.trim().isEmpty) {
-                            showTopNotification(
-                              context,
-                              "Please enter your comments",
-                            );
-
-                            return;
-                          }
-
-                          try {
-                            await provider.submitReview(
-                              productId: productId,
-                              rating: selectedRating,
-                              comment: commentCtrl.text.trim(),
-                              context: context,
-                            );
-                            if (context.mounted) {
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
-                            // Error handled in provider/repo
-                          }
-                        },
-                  child: provider.isSubmittingReview
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          "Submit Review",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReviewItem(Review review) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(
-              review.userAvatar ??
-                  "https://ui-avatars.com/api/?name=${review.userName}",
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      review.userName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      DateFormat('MMM d, yyyy').format(review.createdAt),
-                      style: const TextStyle(color: Colors.grey, fontSize: 11),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: List.generate(
-                    5,
-                    (i) => Icon(
-                      Icons.star,
-                      size: 14,
-                      color: i < review.rating
-                          ? Colors.amber
-                          : Colors.grey[300],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  review.comment,
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    height: 1.4,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSimilarPlants(BuildContext context) {
-    final provider = context.watch<PlantDetailProvider>();
-    if (provider.isLoadingSimilar && provider.similarPlants.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (provider.similarPlants.isEmpty) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Similar Plants",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: provider.similarPlants.length,
-            itemBuilder: (context, index) {
-              final plant = provider.similarPlants[index];
-              return GestureDetector(
-                onTap: () => PlantRoute(plantId: plant.id).push(context),
-                child: Container(
-                  width: 140,
-                  margin: const EdgeInsets.only(right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: CachedNetworkImage(
-                          imageUrl: plant.imageUrl,
-                          height: 130,
-                          width: 140,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              Container(color: Colors.grey[100]),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        plant.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "\$${plant.price}",
-                        style: const TextStyle(
-                          color: Color(0xff50AD98),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 class _StickyBottomDelegate extends SliverPersistentHeaderDelegate {
@@ -617,16 +297,12 @@ class _StickyBottomDelegate extends SliverPersistentHeaderDelegate {
   _StickyBottomDelegate({required this.child});
 
   @override
-  double get minExtent => 90.0;
+  double get minExtent => 130.0;
   @override
-  double get maxExtent => 90.0;
+  double get maxExtent => 130.0;
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return SizedBox.expand(child: child);
   }
 

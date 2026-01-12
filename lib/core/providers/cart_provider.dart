@@ -12,10 +12,7 @@ class CartProvider extends ChangeNotifier {
   List<CartItem> get items => _items;
 
   double get totalAmount {
-    return _items.fold(
-      0,
-      (sum, item) => sum + (item.product.price * item.quantity),
-    );
+    return _items.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
   }
 
   Future<void> loadCart() async {
@@ -40,11 +37,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateQuantity(
-    String itemId,
-    int newQuantity,
-    BuildContext context,
-  ) async {
+  Future<void> updateQuantity(String itemId, int newQuantity, BuildContext context) async {
     try {
       final index = _items.indexWhere((i) => i.id == itemId);
       if (index != -1) {

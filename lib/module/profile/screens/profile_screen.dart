@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/providers/profile_provider.dart';
 import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/logout_widget.dart';
+import '../widgets/profile_opation.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -38,7 +39,12 @@ class _ProfileContent extends StatelessWidget {
         elevation: 0,
       ),
       body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: AppTheme.backgroundLight,
+              child: Center(child: CircularProgressIndicator(color: AppTheme.primary)),
+            )
           : Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -62,22 +68,22 @@ class _ProfileContent extends StatelessWidget {
 
                   const SizedBox(height: 40),
 
-                  _ProfileOption(
+                  ProfileOption(
                     icon: Icons.shopping_bag_outlined,
                     title: "My Orders",
                     onTap: () => OrderRoute().push(context),
                   ),
-                  _ProfileOption(
+                  ProfileOption(
                     icon: Icons.favorite_border,
                     title: "Wishlist",
                     onTap: () => FavoritesRoute().push(context),
                   ),
-                  _ProfileOption(
+                  ProfileOption(
                     icon: Icons.notifications_none,
                     title: "Notifications",
                     onTap: () => NotificationRoute().push(context),
                   ),
-                  _ProfileOption(
+                  ProfileOption(
                     image: 'Assets/potted-plant.png',
                     title: "Add Plant",
                     onTap: () => AddPlantRoute().push(context),
@@ -97,73 +103,12 @@ class _ProfileContent extends StatelessWidget {
                       style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                     onTap: () {
-                      _showLogoutDialog(context, provider);
+                      showLogoutDialog(context, provider);
                     },
                   ),
                 ],
               ),
             ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context, ProfileProvider provider) {
-    showDialog(
-      context: context,
-      builder: (ctx) => CupertinoAlertDialog(
-        title: Text(
-          "Log Out",
-          style: GoogleFonts.cabin(color: AppTheme.textMain, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          "Are you sure you want to log out?",
-          style: GoogleFonts.cabin(color: AppTheme.textMain),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => ctx.pop(),
-            child: Text(
-              "Cancel",
-              style: GoogleFonts.cabin(color: AppTheme.primary, fontWeight: FontWeight.bold),
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              ctx.pop();
-              await provider.signOut();
-              if (context.mounted) context.go('/');
-            },
-            child: Text(
-              "Log Out",
-              style: GoogleFonts.cabin(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileOption extends StatelessWidget {
-  final IconData? icon;
-  final String title;
-  final VoidCallback onTap;
-  final String? image;
-
-  const _ProfileOption({this.icon, required this.title, required this.onTap, this.image});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
-        child: (icon != null && image == null)
-            ? Icon(icon, color: AppTheme.primary)
-            : ImageIcon(AssetImage(image!), color: AppTheme.primary),
-      ),
-      title: Text(title, style: GoogleFonts.cabin(fontWeight: FontWeight.w600)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-      onTap: onTap,
     );
   }
 }

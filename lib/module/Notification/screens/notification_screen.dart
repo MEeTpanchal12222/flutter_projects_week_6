@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects_week_6/core/providers/notification_provider.dart';
+import 'package:flutter_projects_week_6/core/router/app_router.dart';
 import 'package:flutter_projects_week_6/core/services/di.dart';
 import 'package:flutter_projects_week_6/utils/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../../search/widgets/empty_widget.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -42,7 +45,7 @@ class _NotificationContent extends StatelessWidget {
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : provider.notifications.isEmpty
-          ? _buildEmptyState(context)
+          ? buildEmptyState()
           : RefreshIndicator(
               onRefresh: provider.loadNotifications,
               child: ListView.separated(
@@ -55,7 +58,12 @@ class _NotificationContent extends StatelessWidget {
                   final DateTime date = DateTime.parse(note['created_at']);
 
                   return ListTile(
-                    onTap: () => provider.markRead(index,context),
+                    onTap: () async {
+                      await provider.markRead(index, context);
+                      if (note['data']['type'] == "new_arrival") {
+                        PlantRoute(plantId: note['data']['product_id']).push(context);
+                      }
+                    },
                     leading: CircleAvatar(
                       backgroundColor: isRead
                           ? Colors.grey[200]
@@ -88,45 +96,38 @@ class _NotificationContent extends StatelessWidget {
                         ),
                       ],
                     ),
-                    trailing: !isRead
-                        ? Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: AppTheme.primary,
-                              shape: BoxShape.circle,
-                            ),
-                          )
-                        : null,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8,
+                      children: [
+                        (note['data']['type'] == "new_arrival")
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  cacheHeight: 50,
+                                  note['data']['image_url'],
+                                  height: 50,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.error),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        (!isRead)
+                            ? Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
                   );
                 },
               ),
             ),
-    );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.notifications_none_outlined, size: 64, color: Colors.grey[300]),
-          const SizedBox(height: 16),
-          Text(
-            "All caught up!",
-            style: GoogleFonts.cabin(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            "You don't have any notifications right now.",
-            style: TextStyle(color: Colors.grey),
-          ),
-        ],
-      ),
     );
   }
 }
