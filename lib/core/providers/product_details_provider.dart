@@ -63,7 +63,10 @@ class PlantDetailProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final fetched = await _repo.getPlantReviews(plantId: plantId, page: _currentReviewPage);
+      final fetched = await _repo.getPlantReviews(
+        plantId: plantId,
+        page: _currentReviewPage,
+      );
 
       if (fetched.length < _pageSize) {
         hasMoreReviews = false;
@@ -112,12 +115,18 @@ class PlantDetailProvider extends ChangeNotifier {
     required String productId,
     required int rating,
     required String comment,
+    required BuildContext context,
   }) async {
     isSubmittingReview = true;
     notifyListeners();
 
     try {
-      await _repo.addReview(productId: productId, rating: rating, comment: comment);
+      await _repo.addReview(
+        productId: productId,
+        rating: rating,
+        comment: comment,
+        context: context,
+      );
 
       await fetchReviews(productId, isRefresh: true);
     } catch (e) {

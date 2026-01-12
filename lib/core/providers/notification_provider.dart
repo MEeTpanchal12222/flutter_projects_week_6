@@ -23,12 +23,12 @@ class NotificationProvider extends ChangeNotifier {
   }
 
 
-  Future<void> markRead(int index) async {
+  Future<void> markRead(int index,BuildContext context) async {
     final id = notifications[index]['id'];
     notifications[index]['is_read'] = true;
     notifyListeners();
     try {
-      await _repo.markAsRead(id.toString());
+      await _repo.markAsRead(id.toString(), context);
     } catch (e) {
       debugPrint("Error marking read: $e");
     }

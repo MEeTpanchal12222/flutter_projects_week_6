@@ -12,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/theme/app_theme.dart';
-import '../../../utils/widgets/common_top_notification.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -288,10 +287,7 @@ class _NewArrivalCard extends StatelessWidget {
           ),
           InkWell(
             onTap: () async {
-              await getIt<CartProvider>().addToCart(product.id);
-              if (context.mounted) {
-                showTopNotification(context, "added to cart!", isError: false);
-              }
+              await getIt<CartProvider>().addToCart(product.id, context);
             },
             child: Container(
               padding: const EdgeInsets.all(8),

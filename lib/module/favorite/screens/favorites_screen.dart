@@ -34,7 +34,10 @@ class _FavoriteContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Favorites",
-          style: GoogleFonts.cabin(fontWeight: FontWeight.bold, color: Colors.black),
+          style: GoogleFonts.cabin(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
         backgroundColor: AppTheme.primary.withValues(alpha: 0.4),
         elevation: 0,
@@ -89,7 +92,8 @@ class _FavoriteContent extends StatelessWidget {
                             ],
                           ),
                           GestureDetector(
-                            onTap: () => provider.toggleFavorite(product.id),
+                            onTap: () =>
+                                provider.toggleFavorite(product.id, context),
                             child: Container(
                               height: 35,
                               width: 40,
@@ -105,7 +109,9 @@ class _FavoriteContent extends StatelessWidget {
                                 ],
                               ),
                               child: Icon(
-                                product.isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
+                                product.isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border_rounded,
 
                                 color: product.isFavorite
                                     ? AppTheme.primary.withValues(alpha: 1)
@@ -125,11 +131,18 @@ class _FavoriteContent extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.favorite_border, size: 64, color: Colors.grey[400]),
+                  Icon(
+                    Icons.favorite_border,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     "No favorites yet",
-                    style: GoogleFonts.cabin(fontSize: 18, color: Colors.grey[600]),
+                    style: GoogleFonts.cabin(
+                      fontSize: 18,
+                      color: Colors.grey[600],
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(

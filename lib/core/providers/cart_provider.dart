@@ -12,7 +12,10 @@ class CartProvider extends ChangeNotifier {
   List<CartItem> get items => _items;
 
   double get totalAmount {
-    return _items.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
+    return _items.fold(
+      0,
+      (sum, item) => sum + (item.product.price * item.quantity),
+    );
   }
 
   Future<void> loadCart() async {
@@ -28,16 +31,20 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addToCart(String productId) async {
+  Future<void> addToCart(String productId, BuildContext context) async {
     try {
-      await _repo.addToCart(productId);
+      await _repo.addToCart(productId, context);
       await loadCart();
     } catch (e) {
       debugPrint("Error adding to cart: $e");
     }
   }
 
-  Future<void> updateQuantity(String itemId, int newQuantity) async {
+  Future<void> updateQuantity(
+    String itemId,
+    int newQuantity,
+    BuildContext context,
+  ) async {
     try {
       final index = _items.indexWhere((i) => i.id == itemId);
       if (index != -1) {
@@ -49,18 +56,18 @@ class CartProvider extends ChangeNotifier {
         notifyListeners();
       }
 
-      await _repo.updateQuantity(itemId, newQuantity);
+      await _repo.updateQuantity(itemId, newQuantity, context);
       if (newQuantity <= 0) loadCart();
     } catch (e) {
       loadCart();
     }
   }
 
-  Future<void> checkout() async {
+  Future<void> checkout(BuildContext context) async {
     isLoading = true;
     notifyListeners();
     try {
-      await _repo.checkout(totalAmount);
+      await _repo.checkout(totalAmount, context);
       _items.clear();
     } catch (e) {
       debugPrint("Checkout error: $e");
