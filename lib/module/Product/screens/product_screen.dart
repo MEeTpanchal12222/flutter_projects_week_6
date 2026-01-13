@@ -219,10 +219,7 @@ class _ProductDetailsContent extends StatelessWidget {
               ),
             ),
 
-            SliverPadding(
-              padding: EdgeInsets.all(context.widthPercentage(8)),
-              sliver: SliverToBoxAdapter(child: buildSimilarPlants()),
-            ),
+            SliverToBoxAdapter(child: buildSimilarPlants()),
 
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: context.widthPercentage(8)),

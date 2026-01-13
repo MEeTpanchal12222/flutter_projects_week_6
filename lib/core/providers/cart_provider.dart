@@ -15,8 +15,8 @@ class CartProvider extends ChangeNotifier {
     return _items.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
   }
 
-  Future<void> loadCart() async {
-    isLoading = true;
+  Future<void> loadCart({bool? isload = true}) async {
+    isLoading = isload ?? true;
     notifyListeners();
     try {
       _items = await _repo.getCart();
@@ -50,7 +50,7 @@ class CartProvider extends ChangeNotifier {
       }
 
       await _repo.updateQuantity(itemId, newQuantity, context);
-      if (newQuantity <= 0) loadCart();
+      if (newQuantity <= 0) loadCart(isload: false);
     } catch (e) {
       loadCart();
     }

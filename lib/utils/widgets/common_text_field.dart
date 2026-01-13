@@ -32,10 +32,11 @@ class CommonTextField extends StatelessWidget {
           cursorColor: AppTheme.primary,
 
           obscureText: isObscure,
-
+          autocorrect: false,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
+
             fillColor: AppTheme.backgroundLight,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

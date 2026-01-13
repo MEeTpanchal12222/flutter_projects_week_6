@@ -89,21 +89,36 @@ class _SignUpContentState extends State<_SignUpContent> {
                 ),
                 const SizedBox(height: 20),
                 CommonTextField(
-                  ctrl: provider.emailCtrl,
+                  ctrl: provider.emailupCtrl,
                   label: 'Email',
                   hint: 'hello@example.com',
                   isObscure: false,
-                  validator: provider.validateEmail,
+                  validator: (value) => provider.validateEmail(value, isSignUp: true),
                 ),
                 const SizedBox(height: 20),
                 CommonTextField(
-                  ctrl: provider.passCtrl,
+                  ctrl: provider.passwordupCtrl,
                   isObscure: true,
                   label: 'Password',
                   hint: 'Min. 8 characters',
-                  validator: provider.validatePassword,
+                  validator: (value) => provider.validatePassword(value, isSignUp: true),
                 ),
                 const SizedBox(height: 20),
+                CommonTextField(
+                  ctrl: provider.confirmCtrl,
+                  isObscure: true,
+                  label: 'Confirm Password',
+                  hint: 'Min. 8 characters',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != provider.passwordupCtrl.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
 
                 Row(
                   children: [

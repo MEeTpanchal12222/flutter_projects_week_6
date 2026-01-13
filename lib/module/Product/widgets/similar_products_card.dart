@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/providers/product_details_provider.dart';
 import '../../../core/router/app_router.dart';
+import '../../../utils/Extension/responsive_ui_extension.dart';
 
 class buildSimilarPlants extends StatelessWidget {
   const buildSimilarPlants({super.key});
@@ -19,11 +20,18 @@ class buildSimilarPlants extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Similar Plants", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: EdgeInsets.only(left: context.widthPercentage(8)),
+          child: const Text(
+            "Similar Plants",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
         const SizedBox(height: 16),
         SizedBox(
           height: 200,
           child: ListView.builder(
+            padding: EdgeInsets.only(left: context.widthPercentage(8)),
             scrollDirection: Axis.horizontal,
             itemCount: provider.similarPlants.length,
             itemBuilder: (context, index) {

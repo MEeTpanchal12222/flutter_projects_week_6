@@ -139,7 +139,7 @@ class _SignInContentState extends State<_SignInContent> {
                             }
                           },
                     child: provider.isLoading
-                        ? const CircularProgressIndicator()
+                        ? CircularProgressIndicator(color: AppTheme.primary)
                         : Text(
                             "Log In",
                             style: TextStyle(fontSize: context.responsiveTextSize(16)),

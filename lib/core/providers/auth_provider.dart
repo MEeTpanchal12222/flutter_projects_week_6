@@ -10,12 +10,15 @@ class AuthProvider extends ChangeNotifier {
   static const String _keyRememberMe = 'remember_me_status';
 
   AuthProvider(this._repo) {
-    _loadSavedCredentials(); // Load data when the provider is created
+    _loadSavedCredentials();
   }
 
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   final userCtrl = TextEditingController();
+  final emailupCtrl = TextEditingController();
+  final passwordupCtrl = TextEditingController();
+  final confirmCtrl = TextEditingController();
 
   bool _isLoading = false;
   bool _isSignUp = false;
@@ -73,20 +76,20 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? validateEmail(String? value) {
-    final textToCheck = value ?? emailCtrl.text;
+  String? validateEmail(String? value, {bool isSignUp = false}) {
+    final textToCheck = isSignUp ? emailupCtrl.text : emailCtrl.text;
 
     if (textToCheck.trim().isEmpty) {
       return 'Please enter your email';
     }
-    if (!textToCheck.contains('@') || !textToCheck.contains('.')) {
+    if (!textToCheck.contains('@') && !textToCheck.contains('.') && !textToCheck.contains('com')) {
       return 'Please enter a valid email';
     }
     return null;
   }
 
-  String? validatePassword(String? value) {
-    final textToCheck = value ?? passCtrl.text;
+  String? validatePassword(String? value, {bool isSignUp = false}) {
+    final textToCheck = isSignUp ? passwordupCtrl.text : passCtrl.text;
 
     if (textToCheck.isEmpty) {
       return 'Please enter a password';
@@ -113,7 +116,7 @@ class AuthProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      await _repo.signUp(emailCtrl.text, passCtrl.text, userCtrl.text, context);
+      await _repo.signUp(emailupCtrl.text, passwordupCtrl.text, userCtrl.text, context);
     } finally {
       _isLoading = false;
       notifyListeners();
